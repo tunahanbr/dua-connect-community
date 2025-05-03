@@ -1,10 +1,12 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DuaRequestCard from "@/components/request/DuaRequestCard";
 import DuaRequestForm from "@/components/request/DuaRequestForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Heart, MessageSquare } from "lucide-react";
+import SpotlightSearch from "@/components/search/SpotlightSearch";
 
 // Sample data (in a real app, this would come from an API)
 const initialRequests = [
@@ -40,8 +42,35 @@ const initialRequests = [
   }
 ];
 
+const FloatingParticle = ({ delay }: { delay: number }) => {
+  return (
+    <div 
+      className="absolute rounded-full bg-islamic-green/10 animate-float" 
+      style={{
+        width: `${Math.random() * 20 + 5}px`,
+        height: `${Math.random() * 20 + 5}px`,
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        animationDelay: `${delay}s`,
+        animationDuration: `${Math.random() * 10 + 15}s`
+      }}
+    />
+  );
+};
+
+const BackgroundAnimation = () => {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-50">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <FloatingParticle key={i} delay={i * 0.5} />
+      ))}
+    </div>
+  );
+};
+
 const DuaRequests = () => {
   const [requests, setRequests] = useState(initialRequests);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   
   const handleRequestSubmitted = () => {
     const newRequest = {
@@ -54,32 +83,69 @@ const DuaRequests = () => {
     setRequests([newRequest, ...requests]);
   };
   
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setIsSearchOpen((open) => !open);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeydown);
+    return () => window.removeEventListener('keydown', handleKeydown);
+  }, []);
+  
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Navbar />
       
-      <main className="flex-grow container mx-auto px-4 md:px-6 py-8">
+      <SpotlightSearch 
+        open={isSearchOpen} 
+        onOpenChange={setIsSearchOpen} 
+        items={requests.map(request => ({
+          id: request.id,
+          title: request.request.substring(0, 40) + "...",
+          category: "request",
+          path: `/requests?id=${request.id}`
+        }))}
+      />
+      
+      <main className="flex-grow container mx-auto px-4 md:px-6 py-8 relative">
+        <BackgroundAnimation />
         <div className="max-w-4xl mx-auto">
           <div className="mb-10 text-center">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Request Duas</h1>
-            <p className="text-gray-600">
+            <div className="mb-2">
+              <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-islamic-light text-islamic-green animate-fade-up">
+                <MessageSquare size={24} />
+              </span>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-up" style={{animationDelay: '0.1s'}}>Request Duas</h1>
+            <p className="text-gray-600 animate-fade-up" style={{animationDelay: '0.2s'}}>
               Share your request and make dua for others in our community
             </p>
           </div>
           
           <Tabs defaultValue="browse" className="mb-10">
-            <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto mb-6">
-              <TabsTrigger value="browse">Browse Requests</TabsTrigger>
-              <TabsTrigger value="create">Create Request</TabsTrigger>
+            <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto mb-6 bg-slate-100/80 p-1 animate-fade-up" style={{animationDelay: '0.3s'}}>
+              <TabsTrigger value="browse" className="data-[state=active]:bg-white data-[state=active]:text-islamic-green">
+                <Heart size={16} className="mr-2" />
+                Browse Requests
+              </TabsTrigger>
+              <TabsTrigger value="create" className="data-[state=active]:bg-white data-[state=active]:text-islamic-green">
+                <MessageSquare size={16} className="mr-2" />
+                Create Request
+              </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="create" className="mt-0">
+            <TabsContent value="create" className="mt-0 animate-fade-up" style={{animationDelay: '0.4s'}}>
               <DuaRequestForm onRequestSubmitted={handleRequestSubmitted} />
             </TabsContent>
             
             <TabsContent value="browse" className="mt-0 space-y-6">
-              {requests.map((request) => (
-                <DuaRequestCard key={request.id} {...request} />
+              {requests.map((request, index) => (
+                <div key={request.id} className="animate-fade-up" style={{animationDelay: `${0.2 + index * 0.1}s`}}>
+                  <DuaRequestCard {...request} />
+                </div>
               ))}
             </TabsContent>
           </Tabs>

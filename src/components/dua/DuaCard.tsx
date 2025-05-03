@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface DuaCardProps {
   id: string;
@@ -25,9 +26,9 @@ const DuaCard = ({
   return (
     <Card className="border border-slate-100 hover:border-slate-200 bg-white transition-all animate-fade-up" id={`dua-${id}`}>
       <CardHeader className="pb-0">
-        <span className="inline-block category-pill bg-islamic-light text-islamic-green">
+        <Badge variant="outline" className="text-islamic-green bg-islamic-light border-islamic-green/10 w-fit">
           #{category}
-        </span>
+        </Badge>
       </CardHeader>
       
       <CardContent className="space-y-4">
