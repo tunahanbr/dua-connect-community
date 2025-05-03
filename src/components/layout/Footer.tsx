@@ -3,24 +3,19 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-white py-6 border-t border-slate-100">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div>
-            <p className="text-gray-600 text-sm">
-              © {new Date().getFullYear()} Make Dua
-            </p>
-          </div>
+    <footer className="bg-white py-4 border-t border-slate-100">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center">
+          <p className="text-xs text-gray-500">
+            © {new Date().getFullYear()} Make Dua
+          </p>
           
-          <div className="flex gap-6">
-            <Link to="/duas" className="text-gray-600 hover:text-islamic-green text-sm">
+          <div className="flex gap-4">
+            <Link to="/duas" className="text-xs text-gray-500 hover:text-islamic-green">
               Duas
             </Link>
-            <Link to="/requests" className="text-gray-600 hover:text-islamic-green text-sm">
+            <Link to="/requests" className="text-xs text-gray-500 hover:text-islamic-green">
               Requests
-            </Link>
-            <Link to="/about" className="text-gray-600 hover:text-islamic-green text-sm">
-              About
             </Link>
           </div>
         </div>

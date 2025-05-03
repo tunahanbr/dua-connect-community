@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DuaRequestCard from "@/components/request/DuaRequestCard";
@@ -42,35 +42,10 @@ const initialRequests = [
   }
 ];
 
-const FloatingParticle = ({ delay }: { delay: number }) => {
-  return (
-    <div 
-      className="absolute rounded-full bg-islamic-green/10 animate-float" 
-      style={{
-        width: `${Math.random() * 20 + 5}px`,
-        height: `${Math.random() * 20 + 5}px`,
-        left: `${Math.random() * 100}%`,
-        top: `${Math.random() * 100}%`,
-        animationDelay: `${delay}s`,
-        animationDuration: `${Math.random() * 10 + 15}s`
-      }}
-    />
-  );
-};
-
-const BackgroundAnimation = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-50">
-      {Array.from({ length: 10 }).map((_, i) => (
-        <FloatingParticle key={i} delay={i * 0.5} />
-      ))}
-    </div>
-  );
-};
-
 const DuaRequests = () => {
   const [requests, setRequests] = useState(initialRequests);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("browse");
   
   const handleRequestSubmitted = () => {
     const newRequest = {
@@ -81,19 +56,8 @@ const DuaRequests = () => {
     };
     
     setRequests([newRequest, ...requests]);
+    setActiveTab("browse"); // Switch to browse tab after submission
   };
-  
-  useEffect(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setIsSearchOpen((open) => !open);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeydown);
-    return () => window.removeEventListener('keydown', handleKeydown);
-  }, []);
   
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -111,7 +75,6 @@ const DuaRequests = () => {
       />
       
       <main className="flex-grow container mx-auto px-4 md:px-6 py-8 relative">
-        <BackgroundAnimation />
         <div className="max-w-4xl mx-auto">
           <div className="mb-10 text-center">
             <div className="mb-2">
@@ -125,7 +88,11 @@ const DuaRequests = () => {
             </p>
           </div>
           
-          <Tabs defaultValue="browse" className="mb-10">
+          <Tabs 
+            value={activeTab} 
+            onValueChange={setActiveTab}
+            className="mb-10"
+          >
             <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto mb-6 bg-slate-100/80 p-1 animate-fade-up" style={{animationDelay: '0.3s'}}>
               <TabsTrigger value="browse" className="data-[state=active]:bg-white data-[state=active]:text-islamic-green">
                 <Heart size={16} className="mr-2" />

@@ -58,13 +58,6 @@ const DuaRequestCard = ({
   return (
     <Card className="border border-slate-100 hover:border-slate-200 bg-white transition-all animate-fade-up overflow-hidden" id={`request-${id}`}>
       <CardContent className="pt-6 relative">
-        {/* Background pattern */}
-        <div className="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none">
-          <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <path d="M50 0C22.4 0 0 22.4 0 50s22.4 50 50 50 50-22.4 50-50S77.6 0 50 0zm0 90C28.2 90 10 71.8 10 50S28.2 10 50 10s40 18.2 40 40-18.2 40-40 40z" fill="currentColor"/>
-          </svg>
-        </div>
-        
         <p className="text-gray-800 text-lg mb-6 relative z-10">
           {request}
         </p>

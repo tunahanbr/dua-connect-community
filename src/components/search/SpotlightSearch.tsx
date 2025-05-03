@@ -12,6 +12,7 @@ import {
   CommandSeparator
 } from '@/components/ui/command';
 import { useNavigate } from 'react-router-dom';
+import { DialogTitle } from '@/components/ui/dialog';
 
 interface DuaItem {
   id: string;
@@ -40,6 +41,13 @@ const SpotlightSearch = ({ open, onOpenChange, items = defaultItems }: Spotlight
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
+  // Reset search term when opened
+  useEffect(() => {
+    if (open) {
+      setSearchTerm('');
+    }
+  }, [open]);
+
   // Handle search
   useEffect(() => {
     if (searchTerm) {
@@ -65,6 +73,7 @@ const SpotlightSearch = ({ open, onOpenChange, items = defaultItems }: Spotlight
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
+      <DialogTitle className="sr-only">Search duas</DialogTitle>
       <Command className="rounded-lg border shadow-md">
         <div className="flex items-center border-b px-3">
           <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
