@@ -26,9 +26,11 @@ const DuaCard = ({
   return (
     <Card className="border border-slate-100 hover:border-slate-200 bg-white transition-all animate-fade-up" id={`dua-${id}`}>
       <CardHeader className="pb-0">
-        <Badge variant="outline" className="text-islamic-green bg-islamic-light border-islamic-green/10 w-fit">
-          #{category}
-        </Badge>
+        <div className="inline-block">
+          <Badge variant="outline" className="text-islamic-green bg-islamic-light border-islamic-green/10 px-2 py-1">
+            #{category}
+          </Badge>
+        </div>
       </CardHeader>
       
       <CardContent className="space-y-4">

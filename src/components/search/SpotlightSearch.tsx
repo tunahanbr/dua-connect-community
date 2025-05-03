@@ -73,6 +73,7 @@ const SpotlightSearch = ({ open, onOpenChange, items = defaultItems }: Spotlight
             className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none"
             value={searchTerm}
             onValueChange={setSearchTerm}
+            autoFocus
           />
         </div>
         <CommandList>

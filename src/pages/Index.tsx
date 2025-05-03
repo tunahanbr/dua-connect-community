@@ -53,32 +53,6 @@ const FeatureItem = ({ icon, title, description }: { icon: React.ReactNode, titl
   </div>
 );
 
-const FloatingParticle = ({ delay }: { delay: number }) => {
-  return (
-    <div 
-      className="absolute rounded-full bg-islamic-green/10 animate-float" 
-      style={{
-        width: `${Math.random() * 30 + 10}px`,
-        height: `${Math.random() * 30 + 10}px`,
-        left: `${Math.random() * 100}%`,
-        top: `${Math.random() * 100}%`,
-        animationDelay: `${delay}s`,
-        animationDuration: `${Math.random() * 10 + 15}s`
-      }}
-    />
-  );
-};
-
-const BackgroundAnimation = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 15 }).map((_, i) => (
-        <FloatingParticle key={i} delay={i * 0.5} />
-      ))}
-    </div>
-  );
-};
-
 const Index = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
@@ -120,7 +94,6 @@ const Index = () => {
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="bg-white py-16 relative overflow-hidden">
-          <BackgroundAnimation />
           <div className="container mx-auto px-4 md:px-6 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <div className="mb-6 inline-block">
@@ -193,7 +166,7 @@ const Index = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-4xl mx-auto">
               {quickLinks.map((link, index) => (
                 <Link to={`/duas?category=${link.category}`} key={index} className="animate-fade-up" style={{animationDelay: `${index * 0.1}s`}}>
-                  <div className="bg-white border border-slate-100 hover:border-islamic-green/20 hover:bg-islamic-light/30 p-4 rounded-xl text-center transition-all duration-300">
+                  <div className="bg-white border border-slate-100 hover:border-islamic-green/20 hover:bg-islamic-light/30 p-4 rounded-xl text-center transition-all duration-300 h-full flex items-center justify-center">
                     <p className="text-sm font-medium text-gray-800">{link.title}</p>
                   </div>
                 </Link>
