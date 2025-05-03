@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart } from 'lucide-react';
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 interface DuaRequestCardProps {
   id: string;
@@ -27,12 +28,14 @@ const DuaRequestCard = ({
   };
   
   return (
-    <div className="dua-card animate-fade-up" id={`request-${id}`}>
-      <p className="text-gray-800 text-lg mb-6">
-        {request}
-      </p>
+    <Card className="border border-slate-100 hover:border-slate-200 bg-white transition-all animate-fade-up" id={`request-${id}`}>
+      <CardContent className="pt-6">
+        <p className="text-gray-800 text-lg mb-6">
+          {request}
+        </p>
+      </CardContent>
       
-      <div className="flex flex-col items-center border-t border-slate-100 pt-4">
+      <CardFooter className="flex flex-col items-center border-t border-slate-100 pt-4">
         <Button
           onClick={handleMakeDua}
           disabled={hasMadeDua}
@@ -54,8 +57,8 @@ const DuaRequestCard = ({
             {count} {count === 1 ? 'person' : 'people'} made dua
           </span>
         </div>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 };
 

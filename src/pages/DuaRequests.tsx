@@ -4,6 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DuaRequestCard from "@/components/request/DuaRequestCard";
 import DuaRequestForm from "@/components/request/DuaRequestForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Sample data (in a real app, this would come from an API)
 const initialRequests = [
@@ -66,16 +67,22 @@ const DuaRequests = () => {
             </p>
           </div>
           
-          <div className="mb-10">
-            <DuaRequestForm onRequestSubmitted={handleRequestSubmitted} />
-          </div>
-          
-          <h2 className="text-2xl font-semibold mb-6">Community Requests</h2>
-          <div className="grid grid-cols-1 gap-6">
-            {requests.map((request) => (
-              <DuaRequestCard key={request.id} {...request} />
-            ))}
-          </div>
+          <Tabs defaultValue="browse" className="mb-10">
+            <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto mb-6">
+              <TabsTrigger value="browse">Browse Requests</TabsTrigger>
+              <TabsTrigger value="create">Create Request</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="create" className="mt-0">
+              <DuaRequestForm onRequestSubmitted={handleRequestSubmitted} />
+            </TabsContent>
+            
+            <TabsContent value="browse" className="mt-0 space-y-6">
+              {requests.map((request) => (
+                <DuaRequestCard key={request.id} {...request} />
+              ))}
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       

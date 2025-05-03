@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
 interface DuaCardProps {
   id: string;
@@ -22,14 +23,14 @@ const DuaCard = ({
   const [showTransliteration, setShowTransliteration] = useState(false);
   
   return (
-    <div className="dua-card animate-fade-up" id={`dua-${id}`}>
-      <div className="mb-4">
+    <Card className="border border-slate-100 hover:border-slate-200 bg-white transition-all animate-fade-up" id={`dua-${id}`}>
+      <CardHeader className="pb-0">
         <span className="inline-block category-pill bg-islamic-light text-islamic-green">
           #{category}
         </span>
-      </div>
+      </CardHeader>
       
-      <div className="space-y-4">
+      <CardContent className="space-y-4">
         <p className="arabic-text text-2xl mb-4">
           {arabicText}
         </p>
@@ -45,25 +46,25 @@ const DuaCard = ({
             </p>
           )}
         </div>
+      </CardContent>
+      
+      <CardFooter className="flex items-center justify-between pt-0">
+        <span className="text-xs text-gray-500">
+          Source: {source}
+        </span>
         
-        <div className="flex items-center justify-between pt-2">
-          <span className="text-xs text-gray-500">
-            Source: {source}
-          </span>
-          
-          {transliteration && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowTransliteration(!showTransliteration)}
-              className="text-xs text-islamic-green hover:text-islamic-dark"
-            >
-              {showTransliteration ? 'Hide Transliteration' : 'Show Transliteration'}
-            </Button>
-          )}
-        </div>
-      </div>
-    </div>
+        {transliteration && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowTransliteration(!showTransliteration)}
+            className="text-xs text-islamic-green hover:text-islamic-dark"
+          >
+            {showTransliteration ? 'Hide Transliteration' : 'Show Transliteration'}
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
   );
 };
 

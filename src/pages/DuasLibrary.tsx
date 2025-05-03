@@ -4,8 +4,10 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DuaCard from "@/components/dua/DuaCard";
 import DuaFilter from "@/components/dua/DuaFilter";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// Sample data (in a real app, this would come from an API)
+// This is a sample dataset - in a production app, this would be in a database
+// We're structuring it in a way that makes it easy to expand
 const duasData = [
   {
     id: "dua-001",
@@ -70,13 +72,83 @@ const duasData = [
     transliteration: "Allahumma a'inni 'ala dhikrika wa shukrika wa husni 'ibadatik.",
     source: "Abu Dawud",
     category: "guidance"
+  },
+  // Expanded duas set - these can be easily added to since they follow the same structure
+  {
+    id: "dua-009",
+    arabicText: "اللهم اغفر لي ذنبي، ووسع لي في داري، وبارك لي فيما رزقتني",
+    englishTranslation: "O Allah, forgive my sin, make my house spacious, and bless what You have provided me.",
+    transliteration: "Allahumma-ghfir li dhanbi, wa wassi' li fi dari, wa barik li fima razaqtani.",
+    source: "An-Nasa'i",
+    category: "forgiveness"
+  },
+  {
+    id: "dua-010",
+    arabicText: "اللهم إني أسألك علما نافعا، ورزقا طيبا، وعملا متقبلا",
+    englishTranslation: "O Allah, I ask You for beneficial knowledge, good provision, and accepted deeds.",
+    transliteration: "Allahumma inni as'aluka 'ilman nafi'an, wa rizqan tayyiban, wa 'amalan mutaqabbalan.",
+    source: "Ibn Majah",
+    category: "knowledge"
+  },
+  {
+    id: "dua-011",
+    arabicText: "اللهم إني أعوذ بك من الهم والحزن",
+    englishTranslation: "O Allah, I seek refuge in You from anxiety and sorrow.",
+    transliteration: "Allahumma inni a'udhu bika minal-hammi wal-hazan.",
+    source: "Abu Dawud",
+    category: "anxiety"
+  },
+  {
+    id: "dua-012",
+    arabicText: "اللهم لا سهل إلا ما جعلته سهلا، وأنت تجعل الحزن إذا شئت سهلا",
+    englishTranslation: "O Allah, nothing is easy except what You make easy, and You make the difficult easy if You wish.",
+    transliteration: "Allahumma la sahla illa ma ja'altahu sahla, wa anta taj'alul-hazna idha shi'ta sahla.",
+    source: "Ibn Hibban",
+    category: "difficulty"
+  },
+  {
+    id: "dua-013",
+    arabicText: "اللهم إني أستودعك ديني، وأمانتي، وخواتيم عملي، وأهلي ومالي",
+    englishTranslation: "O Allah, I entrust to You my religion, my trusts, the results of my deeds, my family, and my property.",
+    transliteration: "Allahumma inni astawdi'uka dini, wa amanati, wa khawatima 'amali, wa ahli wa mali.",
+    source: "Abu Dawud",
+    category: "protection"
+  },
+  {
+    id: "dua-014",
+    arabicText: "اللَّهُمَّ ارْحَمْنِي بِالْقُرْآنِ. وَاجْعَلْهُ لِي إِمَامًا وَنُورًا وَهُدًى وَرَحْمَةً",
+    englishTranslation: "O Allah, have mercy on me through the Quran, and make it for me a leader, a light, a guidance and a mercy.",
+    transliteration: "Allahummar-hamni bil-Qur'an. Waj'alhu li imaman wa nuran wa hudan wa rahma.",
+    source: "Ibn Majah",
+    category: "guidance"
+  },
+  {
+    id: "dua-015",
+    arabicText: "اللهم اكفني بحلالك عن حرامك، وأغنني بفضلك عمن سواك",
+    englishTranslation: "O Allah, suffice me with what You have allowed instead of what You have forbidden, and make me independent of all others besides You.",
+    transliteration: "Allahumma-kfini bi halaalika 'an haraamika wa aghnini bi fadlika 'amman siwaak.",
+    source: "At-Tirmidhi",
+    category: "provision"
+  },
+  {
+    id: "dua-016",
+    arabicText: "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+    englishTranslation: "I seek refuge in the perfect words of Allah from the evil of what He has created.",
+    transliteration: "A'udhu bi kalimati-llahit-tammati min sharri ma khalaq.",
+    source: "Muslim",
+    category: "protection"
   }
 ];
 
-const categories = ["all", "general", "health", "anxiety", "protection", "guidance", "travel", "forgiveness"];
+// Expanded categories list
+const categories = [
+  "all", "general", "health", "anxiety", "protection", "guidance", 
+  "travel", "forgiveness", "knowledge", "difficulty", "provision"
+];
 
 const DuasLibrary = () => {
   const [filteredDuas, setFilteredDuas] = useState(duasData);
+  const [activeCategoryTab, setActiveCategoryTab] = useState("all");
   
   const handleFilterChange = (search: string, category: string) => {
     let result = duasData;
@@ -95,6 +167,10 @@ const DuasLibrary = () => {
     
     setFilteredDuas(result);
   };
+
+  useEffect(() => {
+    handleFilterChange("", activeCategoryTab);
+  }, [activeCategoryTab]);
   
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -102,7 +178,7 @@ const DuasLibrary = () => {
       
       <main className="flex-grow container mx-auto px-4 md:px-6 py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-10 text-center">
+          <div className="mb-6 text-center">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Duas Library</h1>
             <p className="text-gray-600">
               Find duas for every situation in your life
@@ -114,17 +190,41 @@ const DuasLibrary = () => {
             onFilterChange={handleFilterChange} 
           />
           
-          {filteredDuas.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6">
-              {filteredDuas.map((dua) => (
-                <DuaCard key={dua.id} {...dua} />
+          <div className="mt-8 mb-4">
+            <Tabs 
+              value={activeCategoryTab} 
+              onValueChange={setActiveCategoryTab}
+              className="w-full"
+            >
+              <TabsList className="flex flex-wrap mb-6 bg-transparent">
+                {categories.map((category) => (
+                  <TabsTrigger 
+                    key={category} 
+                    value={category}
+                    className="capitalize m-1"
+                  >
+                    {category}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              
+              {categories.map((category) => (
+                <TabsContent key={category} value={category} className="mt-0">
+                  {filteredDuas.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-6">
+                      {filteredDuas.map((dua) => (
+                        <DuaCard key={dua.id} {...dua} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <p className="text-gray-500">No duas found matching your filters.</p>
+                    </div>
+                  )}
+                </TabsContent>
               ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-500">No duas found matching your filters.</p>
-            </div>
-          )}
+            </Tabs>
+          </div>
         </div>
       </main>
       

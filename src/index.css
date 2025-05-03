@@ -95,7 +95,7 @@
 
 @layer components {
   .dua-card {
-    @apply bg-white rounded-2xl p-6 shadow-soft transition-all duration-300 hover:shadow-card border border-slate-100;
+    @apply bg-white rounded-2xl p-6 transition-all duration-300 hover:bg-slate-50 border border-slate-100;
   }
   
   .category-pill {
@@ -103,7 +103,7 @@
   }
   
   .btn-primary {
-    @apply bg-islamic-green hover:bg-islamic-dark text-white rounded-full px-6 py-2.5 font-medium transition-all duration-300 shadow-soft hover:shadow-md;
+    @apply bg-islamic-green hover:bg-islamic-dark text-white rounded-full px-6 py-2.5 font-medium transition-all duration-300;
   }
   
   .input-field {
