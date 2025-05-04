@@ -6,45 +6,10 @@ import DuaRequestCard from "@/components/request/DuaRequestCard";
 import DuaRequestForm from "@/components/request/DuaRequestForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, MessageSquare } from "lucide-react";
-import SpotlightSearch from "@/components/search/SpotlightSearch";
-
-// Sample data (in a real app, this would come from an API)
-const initialRequests = [
-  {
-    id: "request-001",
-    request: "Please make dua for my mother who is unwell. May Allah grant her complete shifa.",
-    duasCount: 124,
-    createdAt: new Date(Date.now() - 86400000).toISOString() // 1 day ago
-  },
-  {
-    id: "request-002",
-    request: "I have my final exams next week. Please make dua that Allah makes it easy for me and grants me success.",
-    duasCount: 87,
-    createdAt: new Date(Date.now() - 172800000).toISOString() // 2 days ago
-  },
-  {
-    id: "request-003",
-    request: "I'm struggling with anxiety. Please make dua that Allah grants me peace and tranquility.",
-    duasCount: 205,
-    createdAt: new Date(Date.now() - 259200000).toISOString() // 3 days ago
-  },
-  {
-    id: "request-004",
-    request: "Please make dua for my family's well-being and that Allah protects us all from harm.",
-    duasCount: 156,
-    createdAt: new Date(Date.now() - 345600000).toISOString() // 4 days ago
-  },
-  {
-    id: "request-005",
-    request: "I'm searching for a job. Please make dua that Allah opens doors of halal rizq for me.",
-    duasCount: 132,
-    createdAt: new Date(Date.now() - 432000000).toISOString() // 5 days ago
-  }
-];
+import { requestsData } from "@/data/requests";
 
 const DuaRequests = () => {
-  const [requests, setRequests] = useState(initialRequests);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [requests, setRequests] = useState(requestsData);
   const [activeTab, setActiveTab] = useState("browse");
   
   const handleRequestSubmitted = () => {
@@ -63,26 +28,15 @@ const DuaRequests = () => {
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Navbar />
       
-      <SpotlightSearch 
-        open={isSearchOpen} 
-        onOpenChange={setIsSearchOpen} 
-        items={requests.map(request => ({
-          id: request.id,
-          title: request.request.substring(0, 40) + "...",
-          category: "request",
-          path: `/requests?id=${request.id}`
-        }))}
-      />
-      
       <main className="flex-grow container mx-auto px-4 md:px-6 py-6 relative">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-8 text-center">
+          <div className="mb-6 text-center">
             <div className="mb-2">
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-islamic-light text-islamic-green">
-                <MessageSquare size={20} />
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-islamic-light text-islamic-green">
+                <MessageSquare size={16} />
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold mb-2">Request Duas</h1>
+            <h1 className="text-xl md:text-2xl font-bold mb-2">Request Duas</h1>
             <p className="text-gray-600 text-sm">
               Share your request and make dua for others in our community
             </p>
@@ -110,7 +64,7 @@ const DuaRequests = () => {
             
             <TabsContent value="browse" className="mt-0 space-y-4">
               {requests.map((request, index) => (
-                <div key={request.id} className="animate-fade-up" style={{animationDelay: `${index * 0.05}s`}}>
+                <div key={request.id} className="animate-fade-up" style={{animationDelay: `${index * 0.05}s`, animationPlayState: 'running', animationIterationCount: 1}}>
                   <DuaRequestCard {...request} />
                 </div>
               ))}

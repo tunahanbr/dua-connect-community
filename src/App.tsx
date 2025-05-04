@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { SpotlightProvider } from "@/components/search/SpotlightProvider";
 import Index from "./pages/Index";
 import DuasLibrary from "./pages/DuasLibrary";
 import DuaRequests from "./pages/DuaRequests";
@@ -18,13 +19,15 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/duas" element={<DuasLibrary />} />
-          <Route path="/requests" element={<DuaRequests />} />
-          <Route path="/about" element={<About />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <SpotlightProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/duas" element={<DuasLibrary />} />
+            <Route path="/requests" element={<DuaRequests />} />
+            <Route path="/about" element={<About />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </SpotlightProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

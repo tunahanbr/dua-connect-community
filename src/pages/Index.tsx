@@ -1,32 +1,19 @@
 
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Heart, Search, MessageSquare, ArrowUp } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DuaCard from "@/components/dua/DuaCard";
 import DuaRequestCard from "@/components/request/DuaRequestCard";
-import { Card, CardContent } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { CommandDialog } from "@/components/ui/command";
 import { Badge } from "@/components/ui/badge";
+import { useSpotlight } from "@/components/search/SpotlightProvider";
+import { duasData } from "@/data/duas";
+import { requestsData } from "@/data/requests";
 
-const featuredDua = {
-  id: "dua-001",
-  arabicText: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
-  englishTranslation: "Our Lord, give us good in this world and good in the Hereafter and protect us from the punishment of the Fire.",
-  transliteration: "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan waqina 'adhaban-nar.",
-  source: "Quran 2:201",
-  category: "general"
-};
-
-const featuredRequest = {
-  id: "request-001",
-  request: "Please make dua for my mother who is unwell. May Allah grant her complete shifa.",
-  duasCount: 124,
-  createdAt: new Date().toISOString()
-};
+const featuredDua = duasData[0];
+const featuredRequest = requestsData[0];
 
 const quickLinks = [
   { title: "Morning & Evening", category: "daily" },
@@ -45,37 +32,27 @@ const testimonials = [
 
 const FeatureItem = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
   <div className="flex flex-col items-center text-center p-4 transition-all duration-300 hover:translate-y-[-5px]">
-    <div className="w-10 h-10 rounded-full bg-islamic-light flex items-center justify-center mb-3 text-islamic-green">
+    <div className="w-8 h-8 rounded-full bg-islamic-light flex items-center justify-center mb-2 text-islamic-green">
       {icon}
     </div>
-    <h3 className="text-base font-medium mb-2">{title}</h3>
-    <p className="text-gray-600 text-sm">{description}</p>
+    <h3 className="text-sm font-medium mb-1">{title}</h3>
+    <p className="text-gray-600 text-xs">{description}</p>
   </div>
 );
 
 const Index = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [isCommandOpen, setIsCommandOpen] = useState(false);
-  const { toast } = useToast();
+  const { openSearch } = useSpotlight();
 
   useEffect(() => {
     const handleScroll = () => {
       setScrollPosition(window.scrollY);
     };
 
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setIsCommandOpen((open) => !open);
-      }
-    };
-
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('keydown', handleKeydown);
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('keydown', handleKeydown);
     };
   }, []);
 
@@ -85,29 +62,25 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      <CommandDialog open={isCommandOpen} onOpenChange={setIsCommandOpen}>
-        {/* Command dialog content */}
-      </CommandDialog>
-      
       <Navbar />
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="bg-white py-10 relative overflow-hidden">
+        <section className="bg-white py-8 relative overflow-hidden">
           <div className="container mx-auto px-4 md:px-6 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <div className="mb-4 inline-block">
-                <Badge variant="outline" className="text-islamic-green bg-islamic-light border-islamic-green/10 px-3 py-1 text-sm animate-fade-up">
+              <div className="mb-3 inline-block">
+                <Badge variant="outline" className="text-islamic-green bg-islamic-light border-islamic-green/10 px-3 py-1 text-sm">
                   Press ⌘K to search duas
                 </Badge>
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-up" style={{animationDelay: '0.1s'}}>
+              <h1 className="text-2xl md:text-3xl font-bold mb-3">
                 Find & Request <span className="text-islamic-green">Duas</span> for Every Moment
               </h1>
-              <p className="text-base text-gray-600 mb-6 animate-fade-up" style={{animationDelay: '0.2s'}}>
+              <p className="text-sm text-gray-600 mb-4">
                 A beautiful collection of Islamic supplications and a community of people making dua for one another.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{animationDelay: '0.3s'}}>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link to="/duas">
                   <Button className="btn-primary w-full sm:w-auto transition-all hover:scale-105 duration-300">
                     <Search size={16} className="mr-1" />
@@ -126,47 +99,47 @@ const Index = () => {
         </section>
         
         {/* Features Section */}
-        <section className="py-10 bg-slate-50">
+        <section className="py-8 bg-slate-50">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-8 animate-fade-up">
-              <h2 className="text-xl md:text-2xl font-bold">How Make Dua Works</h2>
+            <div className="text-center mb-6">
+              <h2 className="text-lg md:text-xl font-bold">How Make Dua Works</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <FeatureItem 
-                icon={<Search size={20} />}
+                icon={<Search size={16} />}
                 title="Find Duas"
-                description="Search our extensive collection of authentic duas for every situation"
+                description="Search our extensive collection of authentic duas"
               />
               <FeatureItem 
-                icon={<BookOpen size={20} />}
+                icon={<BookOpen size={16} />}
                 title="Learn & Memorize"
-                description="Read Arabic text with translations and transliterations"
+                description="Read Arabic text with translations"
               />
               <FeatureItem 
-                icon={<MessageSquare size={20} />}
+                icon={<MessageSquare size={16} />}
                 title="Request Prayers"
-                description="Share your needs anonymously with the community"
+                description="Share your needs with the community"
               />
               <FeatureItem 
-                icon={<Heart size={20} />}
+                icon={<Heart size={16} />}
                 title="Support Others"
-                description="Make dua for those in need and earn rewards"
+                description="Make dua for others and earn rewards"
               />
             </div>
           </div>
         </section>
         
         {/* Quick Links Section */}
-        <section className="py-10 bg-white">
+        <section className="py-8 bg-white">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-6 animate-fade-up">
-              <h2 className="text-xl md:text-2xl font-bold">Quick Access Duas</h2>
-              <p className="text-gray-600 mt-2 text-sm">Find duas for common situations</p>
+            <div className="text-center mb-5">
+              <h2 className="text-lg md:text-xl font-bold">Quick Access Duas</h2>
+              <p className="text-gray-600 mt-1 text-xs">Find duas for common situations</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-4xl mx-auto">
               {quickLinks.map((link, index) => (
-                <Link to={`/duas?category=${link.category}`} key={index} className="animate-fade-up" style={{animationDelay: `${index * 0.1}s`}}>
-                  <div className="bg-white border border-slate-100 hover:border-islamic-green/20 hover:bg-islamic-light/30 p-4 rounded-xl text-center transition-all duration-300 h-16 flex items-center justify-center">
+                <Link to={`/duas?category=${link.category}`} key={index}>
+                  <div className="bg-white border border-slate-100 hover:border-islamic-green/20 hover:bg-islamic-light/30 p-4 rounded-xl text-center transition-all duration-300 h-14 flex items-center justify-center">
                     <p className="text-sm font-medium text-gray-800">{link.title}</p>
                   </div>
                 </Link>
@@ -176,16 +149,16 @@ const Index = () => {
         </section>
         
         {/* Featured Content */}
-        <section className="py-12 container mx-auto px-4 md:px-6">
-          <div className="text-center mb-8 animate-fade-up">
-            <h2 className="text-xl md:text-2xl font-bold">Featured Content</h2>
+        <section className="py-10 container mx-auto px-4 md:px-6">
+          <div className="text-center mb-6">
+            <h2 className="text-lg md:text-xl font-bold">Featured Content</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {/* Featured Dua */}
-            <div className="space-y-4 animate-fade-up">
-              <h3 className="text-lg font-semibold">Dua of the Day</h3>
+            <div className="space-y-4">
+              <h3 className="text-base font-semibold">Dua of the Day</h3>
               <DuaCard {...featuredDua} />
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center mt-3">
                 <Link to="/duas">
                   <Button variant="outline" className="border-islamic-green text-islamic-green hover:bg-islamic-light transition-all hover:scale-105 duration-300 text-sm">
                     View All Duas
@@ -195,10 +168,10 @@ const Index = () => {
             </div>
             
             {/* Featured Request */}
-            <div className="space-y-4 animate-fade-up" style={{animationDelay: '0.2s'}}>
-              <h3 className="text-lg font-semibold">Recent Request</h3>
+            <div className="space-y-4">
+              <h3 className="text-base font-semibold">Recent Request</h3>
               <DuaRequestCard {...featuredRequest} />
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center mt-3">
                 <Link to="/requests">
                   <Button variant="outline" className="border-islamic-green text-islamic-green hover:bg-islamic-light transition-all hover:scale-105 duration-300 text-sm">
                     View All Requests
@@ -210,19 +183,18 @@ const Index = () => {
         </section>
         
         {/* Testimonials Section */}
-        <section className="py-12 bg-slate-50">
+        <section className="py-10 bg-slate-50">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-8 animate-fade-up">
-              <h2 className="text-xl md:text-2xl font-bold">What Our Users Say</h2>
+            <div className="text-center mb-6">
+              <h2 className="text-lg md:text-xl font-bold">What Our Users Say</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
               {testimonials.map((testimonial, index) => (
                 <div 
                   key={index} 
-                  className="bg-white p-5 rounded-xl border border-slate-100 animate-fade-up"
-                  style={{animationDelay: `${index * 0.15}s`}}
+                  className="bg-white p-4 rounded-xl border border-slate-100"
                 >
-                  <p className="text-gray-600 italic mb-4 text-sm">"{testimonial.text}"</p>
+                  <p className="text-gray-600 italic mb-3 text-sm">"{testimonial.text}"</p>
                   <p className="text-sm font-medium text-right">— {testimonial.author}</p>
                 </div>
               ))}
@@ -231,18 +203,16 @@ const Index = () => {
         </section>
         
         {/* Quote Section */}
-        <section className="bg-islamic-light py-12">
+        <section className="bg-islamic-light py-10">
           <div className="container mx-auto px-4 md:px-6">
-            <Card className="max-w-3xl mx-auto border-none bg-white/80 backdrop-blur animate-fade-up">
-              <CardContent className="pt-6 pb-6 text-center">
-                <p className="text-lg md:text-xl italic text-islamic-dark mb-4">
-                  "The dua of a Muslim for his brother in his absence is readily accepted. An angel is appointed to his side. Whenever he makes a beneficial dua for his brother the appointed angel says, 'Ameen, and the same for you.'"
-                </p>
-                <p className="text-sm text-islamic-green font-medium">
-                  - Sahih Muslim
-                </p>
-              </CardContent>
-            </Card>
+            <div className="max-w-3xl mx-auto border-none bg-white/80 backdrop-blur p-5 rounded-lg">
+              <p className="text-base md:text-lg italic text-islamic-dark mb-3 text-center">
+                "The dua of a Muslim for his brother in his absence is readily accepted. An angel is appointed to his side. Whenever he makes a beneficial dua for his brother the appointed angel says, 'Ameen, and the same for you.'"
+              </p>
+              <p className="text-sm text-islamic-green font-medium text-center">
+                - Sahih Muslim
+              </p>
+            </div>
           </div>
         </section>
       </main>
@@ -251,10 +221,10 @@ const Index = () => {
       {scrollPosition > 300 && (
         <button 
           onClick={scrollToTop} 
-          className="fixed bottom-8 right-8 bg-islamic-green text-white p-2.5 rounded-full shadow-lg hover:bg-islamic-dark transition-all z-50 animate-fade-up"
+          className="fixed bottom-6 right-6 bg-islamic-green text-white p-2 rounded-full shadow-lg hover:bg-islamic-dark transition-all z-50"
           aria-label="Back to top"
         >
-          <ArrowUp size={18} />
+          <ArrowUp size={16} />
         </button>
       )}
       

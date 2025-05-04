@@ -27,16 +27,7 @@ interface SpotlightSearchProps {
   items?: DuaItem[];
 }
 
-const defaultItems: DuaItem[] = [
-  { id: "dua-001", title: "Rabbana atina fid-dunya", category: "general", path: "/duas?id=dua-001" },
-  { id: "dua-002", title: "Dua for anxiety relief", category: "anxiety", path: "/duas?id=dua-002" },
-  { id: "dua-003", title: "Dua for forgiveness", category: "forgiveness", path: "/duas?id=dua-003" },
-  { id: "dua-004", title: "Morning dua", category: "daily", path: "/duas?id=dua-004" },
-  { id: "dua-005", title: "Evening dua", category: "daily", path: "/duas?id=dua-005" },
-  { id: "dua-006", title: "Dua for travel", category: "travel", path: "/duas?id=dua-006" },
-];
-
-const SpotlightSearch = ({ open, onOpenChange, items = defaultItems }: SpotlightSearchProps) => {
+const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProps) => {
   const [searchResults, setSearchResults] = useState<DuaItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
@@ -72,11 +63,8 @@ const SpotlightSearch = ({ open, onOpenChange, items = defaultItems }: Spotlight
     onOpenChange(false);
   };
 
-  // Only render the dialog if open state is true
-  if (!open) return null;
-
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
+    <CommandDialog open={open} onOpenChange={onOpenChange} className="overflow-hidden">
       <DialogTitle className="sr-only">Search duas</DialogTitle>
       <Command className="rounded-lg border shadow-md">
         <div className="flex items-center border-b px-3">
@@ -91,7 +79,7 @@ const SpotlightSearch = ({ open, onOpenChange, items = defaultItems }: Spotlight
         </div>
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Duas">
+          <CommandGroup heading="Results">
             {searchResults.map((item) => (
               <CommandItem
                 key={item.id}
@@ -106,12 +94,16 @@ const SpotlightSearch = ({ open, onOpenChange, items = defaultItems }: Spotlight
               </CommandItem>
             ))}
           </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup>
-            <CommandItem onSelect={handleViewAll} className="cursor-pointer text-islamic-green">
-              View all results
-            </CommandItem>
-          </CommandGroup>
+          {searchTerm && (
+            <>
+              <CommandSeparator />
+              <CommandGroup>
+                <CommandItem onSelect={handleViewAll} className="cursor-pointer text-islamic-green">
+                  View all results
+                </CommandItem>
+              </CommandGroup>
+            </>
+          )}
         </CommandList>
       </Command>
     </CommandDialog>
