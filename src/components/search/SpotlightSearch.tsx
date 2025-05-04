@@ -45,8 +45,9 @@ const SpotlightSearch = ({ open, onOpenChange, items = defaultItems }: Spotlight
   useEffect(() => {
     if (open) {
       setSearchTerm('');
+      setSearchResults(items.slice(0, 5)); // Show first 5 items when opening
     }
-  }, [open]);
+  }, [open, items]);
 
   // Handle search
   useEffect(() => {
@@ -70,6 +71,9 @@ const SpotlightSearch = ({ open, onOpenChange, items = defaultItems }: Spotlight
     navigate(`/duas?search=${encodeURIComponent(searchTerm)}`);
     onOpenChange(false);
   };
+
+  // Only render the dialog if open state is true
+  if (!open) return null;
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>

@@ -50,12 +50,12 @@ const DuaRequests = () => {
   const handleRequestSubmitted = () => {
     const newRequest = {
       id: `request-${new Date().getTime()}`,
-      request: "Please make dua for me.", // This is a placeholder, the actual request was cleared in the form
+      request: "Please make dua for me.", // Placeholder
       duasCount: 0,
       createdAt: new Date().toISOString()
     };
     
-    setRequests([newRequest, ...requests]);
+    setRequests(prevRequests => [newRequest, ...prevRequests]);
     setActiveTab("browse"); // Switch to browse tab after submission
   };
   
@@ -74,16 +74,16 @@ const DuaRequests = () => {
         }))}
       />
       
-      <main className="flex-grow container mx-auto px-4 md:px-6 py-8 relative">
+      <main className="flex-grow container mx-auto px-4 md:px-6 py-6 relative">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-10 text-center">
+          <div className="mb-8 text-center">
             <div className="mb-2">
-              <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-islamic-light text-islamic-green animate-fade-up">
-                <MessageSquare size={24} />
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-islamic-light text-islamic-green">
+                <MessageSquare size={20} />
               </span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-up" style={{animationDelay: '0.1s'}}>Request Duas</h1>
-            <p className="text-gray-600 animate-fade-up" style={{animationDelay: '0.2s'}}>
+            <h1 className="text-2xl md:text-3xl font-bold mb-2">Request Duas</h1>
+            <p className="text-gray-600 text-sm">
               Share your request and make dua for others in our community
             </p>
           </div>
@@ -91,9 +91,9 @@ const DuaRequests = () => {
           <Tabs 
             value={activeTab} 
             onValueChange={setActiveTab}
-            className="mb-10"
+            className="mb-8"
           >
-            <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto mb-6 bg-slate-100/80 p-1 animate-fade-up" style={{animationDelay: '0.3s'}}>
+            <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto mb-6 bg-slate-100/80 p-1">
               <TabsTrigger value="browse" className="data-[state=active]:bg-white data-[state=active]:text-islamic-green">
                 <Heart size={16} className="mr-2" />
                 Browse Requests
@@ -104,13 +104,13 @@ const DuaRequests = () => {
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="create" className="mt-0 animate-fade-up" style={{animationDelay: '0.4s'}}>
+            <TabsContent value="create" className="mt-0">
               <DuaRequestForm onRequestSubmitted={handleRequestSubmitted} />
             </TabsContent>
             
-            <TabsContent value="browse" className="mt-0 space-y-6">
+            <TabsContent value="browse" className="mt-0 space-y-4">
               {requests.map((request, index) => (
-                <div key={request.id} className="animate-fade-up" style={{animationDelay: `${0.2 + index * 0.1}s`}}>
+                <div key={request.id} className="animate-fade-up" style={{animationDelay: `${index * 0.05}s`}}>
                   <DuaRequestCard {...request} />
                 </div>
               ))}

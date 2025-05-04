@@ -41,25 +41,25 @@ const Navbar = () => {
     <>
       <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-14">
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
-                <span className="text-2xl font-bold text-islamic-green">Make Dua</span>
+                <span className="text-lg font-bold text-islamic-green">Make Dua</span>
               </Link>
             </div>
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-1">
-              <Link to="/" className={`px-4 py-2 rounded-full font-medium transition-colors ${isActive('/') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
+              <Link to="/" className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${isActive('/') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
                 Home
               </Link>
-              <Link to="/duas" className={`px-4 py-2 rounded-full font-medium transition-colors ${isActive('/duas') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
+              <Link to="/duas" className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${isActive('/duas') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
                 Duas
               </Link>
-              <Link to="/requests" className={`px-4 py-2 rounded-full font-medium transition-colors ${isActive('/requests') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
+              <Link to="/requests" className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${isActive('/requests') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
                 Requests
               </Link>
-              <Link to="/about" className={`px-4 py-2 rounded-full font-medium transition-colors ${isActive('/about') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
+              <Link to="/about" className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${isActive('/about') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
                 About
               </Link>
             </div>
@@ -72,7 +72,7 @@ const Navbar = () => {
                 onClick={toggleMenu}
                 aria-label="Menu"
               >
-                {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
               </Button>
             </div>
           </div>
@@ -84,28 +84,28 @@ const Navbar = () => {
             <div className="container mx-auto px-4 py-2 space-y-1">
               <Link 
                 to="/" 
-                className={`block py-2 px-4 rounded-full ${isActive('/') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
+                className={`block py-2 px-3 rounded-full text-sm ${isActive('/') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
                 onClick={toggleMenu}
               >
                 Home
               </Link>
               <Link 
                 to="/duas" 
-                className={`block py-2 px-4 rounded-full ${isActive('/duas') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
+                className={`block py-2 px-3 rounded-full text-sm ${isActive('/duas') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
                 onClick={toggleMenu}
               >
                 Duas
               </Link>
               <Link 
                 to="/requests" 
-                className={`block py-2 px-4 rounded-full ${isActive('/requests') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
+                className={`block py-2 px-3 rounded-full text-sm ${isActive('/requests') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
                 onClick={toggleMenu}
               >
                 Requests
               </Link>
               <Link 
                 to="/about" 
-                className={`block py-2 px-4 rounded-full ${isActive('/about') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
+                className={`block py-2 px-3 rounded-full text-sm ${isActive('/requests') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
                 onClick={toggleMenu}
               >
                 About
