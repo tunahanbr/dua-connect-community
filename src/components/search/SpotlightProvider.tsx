@@ -1,8 +1,7 @@
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import SpotlightSearch from './SpotlightSearch';
-import { duasData } from '@/data/duas';
-import { requestsData } from '@/data/requests';
+import { db } from '@/lib/db';
 
 // Define the context type
 interface SpotlightContextType {
@@ -26,6 +25,60 @@ export const useSpotlight = () => useContext(SpotlightContext);
 // Create our provider component
 export const SpotlightProvider = ({ children }: { children: ReactNode }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchItems, setSearchItems] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [duas, requests] = await Promise.all([
+          db.duas.getAll(),
+          db.requests.getAll()
+        ]);
+
+        const items = [
+          ...duas.map(dua => {
+            // Check for both camelCase and snake_case field names
+            const englishText = dua.englishTranslation || dua.english_translation || "";
+            const arabicText = dua.arabicText || dua.arabic_text || "";
+            const transliterationText = dua.transliteration || "";
+            const categoryText = dua.category || "Uncategorized";
+            
+            return {
+              id: dua.id,
+              title: englishText && typeof englishText === 'string' 
+                ? englishText.substring(0, 40) + (englishText.length > 40 ? "..." : "") 
+                : "Untitled Dua",
+              category: categoryText,
+              path: `/duas?id=${dua.id}`,
+              englishTranslation: englishText,
+              arabicText: arabicText,
+              transliteration: transliterationText
+            };
+          }),
+          ...requests.map(request => {
+            const requestText = request.request || "";
+            
+            return {
+              id: request.id,
+              title: requestText && typeof requestText === 'string'
+                ? requestText.substring(0, 40) + (requestText.length > 40 ? "..." : "")
+                : "Untitled Request",
+              category: "request",
+              path: `/requests?id=${request.id}`,
+              englishTranslation: requestText
+            };
+          })
+        ];
+
+        setSearchItems(items);
+        console.log("Search items loaded:", items); // Debug log
+      } catch (error) {
+        console.error('Failed to fetch search items:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const openSearch = () => setIsSearchOpen(true);
   const closeSearch = () => setIsSearchOpen(false);
@@ -45,24 +98,6 @@ export const SpotlightProvider = ({ children }: { children: ReactNode }) => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
-
-  // Create a combined list of searchable items
-  const searchItems = [
-    // Map duas to searchable items
-    ...duasData.map(dua => ({
-      id: dua.id,
-      title: dua.englishTranslation.substring(0, 40) + (dua.englishTranslation.length > 40 ? "..." : ""),
-      category: dua.category,
-      path: `/duas?id=${dua.id}`
-    })),
-    // Map requests to searchable items
-    ...requestsData.map(request => ({
-      id: request.id,
-      title: request.request.substring(0, 40) + (request.request.length > 40 ? "..." : ""),
-      category: "request",
-      path: `/requests?id=${request.id}`
-    }))
-  ];
 
   return (
     <SpotlightContext.Provider value={{ isSearchOpen, openSearch, closeSearch, toggleSearch }}>

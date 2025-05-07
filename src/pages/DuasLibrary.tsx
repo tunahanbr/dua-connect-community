@@ -7,22 +7,51 @@ import DuaCard from "@/components/dua/DuaCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { duasData } from "@/data/duas";
 import { useSpotlight } from "@/components/search/SpotlightProvider";
-
-// Expanded categories list
-const categories = [
-  "all", "general", "health", "anxiety", "protection", "guidance", 
-  "travel", "forgiveness", "knowledge", "difficulty", "provision"
-];
+import { db, type Dua } from '@/lib/db';
 
 const DuasLibrary = () => {
   const [searchParams] = useSearchParams();
-  const [filteredDuas, setFilteredDuas] = useState(duasData);
+  const [duas, setDuas] = useState([]);
+  const [filteredDuas, setFilteredDuas] = useState([]);
+  const [categories, setCategories] = useState(['all']);
   const [activeCategoryTab, setActiveCategoryTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const { openSearch } = useSpotlight();
-  
+
+  useEffect(() => {
+    fetchDuas();
+  }, []);
+
+  const fetchDuas = async () => {
+    try {
+      const result = await db.duas.getAll();
+      // Transform the data to match the expected prop names
+      const transformedDuas = result.map(dua => ({
+        id: dua.id,
+        arabicText: dua.arabicText,
+        englishTranslation: dua.englishTranslation,
+        germanTranslation: dua.germanTranslation,
+        turkishTranslation: dua.turkishTranslation,
+        transliteration: dua.transliteration,
+        source: dua.source,
+        category: dua.category
+      }));
+
+      // Extract unique categories from duas
+      const uniqueCategories = ['all', ...new Set(transformedDuas.map(dua => dua.category))];
+      
+      setDuas(transformedDuas);
+      setFilteredDuas(transformedDuas);
+      setCategories(uniqueCategories);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Failed to fetch duas:', error);
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     // Handle URL parameters
     const category = searchParams.get('category');
@@ -38,7 +67,7 @@ const DuasLibrary = () => {
     }
     
     if (id) {
-      const dua = duasData.find(d => d.id === id);
+      const dua = duas.find(d => d.id === id);
       if (dua) {
         setFilteredDuas([dua]);
         return;
@@ -46,15 +75,17 @@ const DuasLibrary = () => {
     }
     
     handleFilterChange(search || "", category || activeCategoryTab);
-  }, [searchParams]);
-  
+  }, [searchParams, duas]);
+
   const handleFilterChange = (search: string, category: string) => {
-    let result = duasData;
+    let result = duas;
     
     if (search) {
       result = result.filter(
         (dua) => 
           dua.englishTranslation.toLowerCase().includes(search.toLowerCase()) ||
+        dua.germanTranslation.toLowerCase().includes(search.toLowerCase()) ||
+        dua.turkishTranslation.toLowerCase().includes(search.toLowerCase()) ||
           dua.transliteration?.toLowerCase().includes(search.toLowerCase())
       );
     }
@@ -99,12 +130,12 @@ const DuasLibrary = () => {
               className="w-full"
             >
               <div className="mb-6 overflow-x-auto pb-2">
-                <TabsList className="flex h-auto p-1 bg-slate-100/80">
+                <TabsList className="flex h-auto p-1">
                   {categories.map((category) => (
                     <TabsTrigger 
                       key={category} 
                       value={category}
-                      className="capitalize data-[state=active]:bg-white data-[state=active]:text-islamic-green"
+                      className="capitalize data-[state=active]:bg-white/80 data-[state=active]:text-islamic-green"
                     >
                       {category}
                     </TabsTrigger>
@@ -114,7 +145,15 @@ const DuasLibrary = () => {
               
               {categories.map((category) => (
                 <TabsContent key={category} value={category} className="mt-0">
-                  {filteredDuas.length > 0 ? (
+                  {isLoading ? (
+                    <div className="space-y-4">
+                      {[1, 2, 3].map((n) => (
+                        <div key={n} className="animate-pulse">
+                          <div className="h-48 bg-slate-100 rounded-lg"></div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : filteredDuas.length > 0 ? (
                     <div className="grid grid-cols-1 gap-6">
                       {filteredDuas.map((dua) => (
                         <DuaCard key={dua.id} {...dua} />

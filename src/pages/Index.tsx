@@ -9,11 +9,24 @@ import DuaCard from "@/components/dua/DuaCard";
 import DuaRequestCard from "@/components/request/DuaRequestCard";
 import { Badge } from "@/components/ui/badge";
 import { useSpotlight } from "@/components/search/SpotlightProvider";
-import { duasData } from "@/data/duas";
-import { requestsData } from "@/data/requests";
+import { db } from "@/lib/db";
 
-const featuredDua = duasData[0];
-const featuredRequest = requestsData[0];
+// Remove static data imports and define types
+interface Dua {
+  id: string
+  arabic_text: string;
+  english_translation: string;
+  transliteration: string;
+  source: string;
+  category: string;
+}
+
+interface Request {
+  id: string;
+  request: string;
+  duas_count: number;
+  created_at: string;
+}
 
 const quickLinks = [
   { title: "Morning & Evening", category: "daily" },
@@ -43,6 +56,54 @@ const FeatureItem = ({ icon, title, description }: { icon: React.ReactNode, titl
 const Index = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const { openSearch } = useSpotlight();
+  const [featuredDua, setFeaturedDua] = useState<Dua | null>(null);
+  const [featuredRequest, setFeaturedRequest] = useState<Request | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedContent = async () => {
+      try {
+        const [duas, requests] = await Promise.all([
+          db.duas.getAll({
+            sort: '-created',
+            limit: 1
+          }),
+          db.requests.getAll({
+            sort: '-created',
+            limit: 1,
+            filter: 'status = "approved"'
+          })
+        ]);
+
+        // Get the most recent dua and request
+        if (duas.length > 0) {
+          setFeaturedDua({
+            id: duas[0].id,
+            arabic_text: duas[0].arabic_text,
+            english_translation: duas[0].english_translation,
+            transliteration: duas[0].transliteration,
+            source: duas[0].source,
+            category: duas[0].category
+          });
+        }
+        
+        if (requests.length > 0) {
+          setFeaturedRequest({
+            id: requests[0].id,
+            request: requests[0].request,
+            duas_count: requests[0].duas_count || 0,
+            created_at: requests[0].created
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch featured content:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFeaturedContent();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -157,7 +218,20 @@ const Index = () => {
             {/* Featured Dua */}
             <div className="space-y-4">
               <h3 className="text-base font-semibold">Dua of the Day</h3>
-              <DuaCard {...featuredDua} />
+              {isLoading ? (
+                <div className="animate-pulse bg-slate-100 rounded-lg h-48"></div>
+              ) : featuredDua ? (
+                <DuaCard
+                  id={featuredDua.id}
+                  arabicText={featuredDua.arabic_text}
+                  englishTranslation={featuredDua.english_translation}
+                  transliteration={featuredDua.transliteration}
+                  source={featuredDua.source}
+                  category={featuredDua.category}
+                />
+              ) : (
+                <div className="text-center py-8 text-gray-500">No duas available</div>
+              )}
               <div className="flex justify-center mt-3">
                 <Link to="/duas">
                   <Button variant="outline" className="border-islamic-green text-islamic-green hover:bg-islamic-light transition-all hover:scale-105 duration-300 text-sm">
@@ -170,7 +244,18 @@ const Index = () => {
             {/* Featured Request */}
             <div className="space-y-4">
               <h3 className="text-base font-semibold">Recent Request</h3>
-              <DuaRequestCard {...featuredRequest} />
+              {isLoading ? (
+                <div className="animate-pulse bg-slate-100 rounded-lg h-48"></div>
+              ) : featuredRequest ? (
+                <DuaRequestCard
+                  id={featuredRequest.id}
+                  request={featuredRequest.request}
+                  duasCount={featuredRequest.duas_count}
+                  createdAt={featuredRequest.created_at}
+                />
+              ) : (
+                <div className="text-center py-8 text-gray-500">No requests available</div>
+              )}
               <div className="flex justify-center mt-3">
                 <Link to="/requests">
                   <Button variant="outline" className="border-islamic-green text-islamic-green hover:bg-islamic-light transition-all hover:scale-105 duration-300 text-sm">

@@ -1,4 +1,4 @@
-
+/*
 export const duasData = [
   {
     id: "dua-001",
@@ -129,3 +129,4 @@ export const duasData = [
     category: "protection"
   }
 ];
+*/
