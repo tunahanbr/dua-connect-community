@@ -1,5 +1,4 @@
 import PocketBase from 'pocketbase';
-// Remove this line: import 'dotenv/config';
 
 // Get environment variables with fallbacks
 const pocketbaseUrl = import.meta.env.VITE_POCKETBASE_URL || 'http://127.0.0.1:8090';
@@ -42,21 +41,22 @@ export interface Request {
 export const db = {
   duas: {
     getAll: async (options: Record<string, any> = {}) => {
-      const signal = new AbortController();
       try {
+        // Create a custom cancelKey to prevent auto-cancellation
+        const cancelKey = `duas_${Date.now()}`;
         const result = await pb.collection('duas').getList(1, options.limit || 300, {
           ...options,
-          signal: signal.signal,
+          $cancelKey: cancelKey, // Add a unique cancel key
         });
         return result.items;
       } catch (error) {
-        if (error.name === 'AbortError') {
-          console.log('Request was cancelled');
-          return [];
+        // Only log and throw if it's not an auto-cancellation
+        if (error?.status !== 0 || !error?.message?.includes('autocancelled')) {
+          console.error('Error fetching duas:', error);
+          throw error;
         }
-        throw error;
-      } finally {
-        signal.abort();
+        // Return empty array for cancelled requests
+        return [];
       }
     },
     getOne: async (id: string) => {
@@ -74,24 +74,24 @@ export const db = {
   },
   requests: {
     getAll: async (options: Record<string, any> = {}) => {
-      const signal = new AbortController();
       try {
+        // Create a custom cancelKey to prevent auto-cancellation
+        const cancelKey = `requests_${Date.now()}`;
         const result = await pb.collection('requests').getList(1, options.limit || 50, {
           ...options,
-          signal: signal.signal,
+          $cancelKey: cancelKey, // Add a unique cancel key
         });
         return result.items;
       } catch (error) {
-        if (error.name === 'AbortError') {
-          console.log('Request was cancelled');
-          return [];
+        // Only log and throw if it's not an auto-cancellation
+        if (error?.status !== 0 || !error?.message?.includes('autocancelled')) {
+          console.error('Error fetching requests:', error);
+          throw error;
         }
-        throw error;
-      } finally {
-        signal.abort();
+        // Return empty array for cancelled requests
+        return [];
       }
-    }
-    ,
+    },
     getOne: async (id: string) => {
       return await pb.collection('requests').getOne(id);
     },

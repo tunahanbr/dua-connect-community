@@ -48,9 +48,6 @@ const DuaCard = ({
     // This handles both "Category.X" and "category.X" formats
     const normalizedCategory = category.toLowerCase().replace(/^category\./i, '');
     
-    // Log for debugging
-    console.log(`Original category: "${category}", Normalized: "${normalizedCategory}"`);
-
     // Translate using the normalized category key
     return t(`category.${normalizedCategory}`);
   };

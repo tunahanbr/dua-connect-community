@@ -23,6 +23,14 @@ const DuasLibrary = () => {
   const tabsListRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
+  const isMounted = useRef(true);
+
+  // Add cleanup function to prevent state updates after unmount
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     fetchDuas();
@@ -68,7 +76,11 @@ const DuasLibrary = () => {
 
   const fetchDuas = async () => {
     try {
+      setIsLoading(true);
       const result = await db.duas.getAll();
+      
+      // Only update state if component is still mounted
+      if (!isMounted.current) return;
 
       // Make sure to normalize all category values
       const transformedDuas = result.map(dua => ({
@@ -83,13 +95,18 @@ const DuasLibrary = () => {
       setDuas(transformedDuas);
       setFilteredDuas(transformedDuas);
       setCategories(uniqueCategories);
-      setIsLoading(false);
       
       // Debug log to check category values
-      console.log("Categories after processing:", uniqueCategories);
     } catch (error) {
+      // Only update state if component is still mounted
+      if (!isMounted.current) return;
+      
       console.error("Failed to fetch duas:", error);
-      setIsLoading(false);
+    } finally {
+      // Only update state if component is still mounted
+      if (isMounted.current) {
+        setIsLoading(false);
+      }
     }
   };
 
