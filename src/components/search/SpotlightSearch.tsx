@@ -130,9 +130,26 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
 
   // Handle category selection
   const handleCategorySelect = (category: string) => {
-    console.log(`Navigating to category: ${category}`); // Debug log
-    navigate(`/duas?category=${encodeURIComponent(category)}`);
+    console.log(`Selecting category: ${category}`); // Debug log
+    
+    // Navigate to the duas page
+    navigate('/duas');
+    
+    // Close the spotlight search
     onOpenChange(false);
+    
+    // Use a small timeout to ensure the navigation completes and components are mounted
+    setTimeout(() => {
+      // Create a custom event to communicate with DuasLibrary
+      const event = new CustomEvent('selectDuaCategory', { 
+        detail: { category } 
+      });
+      
+      // Dispatch the event to the window so DuasLibrary can listen for it
+      window.dispatchEvent(event);
+      
+      console.log(`Dispatched selectDuaCategory event for: ${category}`);
+    }, 100);
   };
 
   // Check if search term matches a category (case insensitive)

@@ -25,6 +25,42 @@ const DuasLibrary = () => {
   const [showRightArrow, setShowRightArrow] = useState(true);
   const isMounted = useRef(true);
 
+  // Add event listener for category selection from SpotlightSearch
+  useEffect(() => {
+    const handleCategorySelection = (event: CustomEvent) => {
+      const { category } = event.detail;
+      console.log(`DuasLibrary received category selection: ${category}`);
+      
+      // Check if this category exists in our categories list
+      if (categories.includes(category)) {
+        setActiveCategoryTab(category);
+        handleFilterChange("", category);
+      } else {
+        // If category doesn't exist exactly as provided, try to find a normalized match
+        const normalizedTargetCategory = normalizeCategory(category);
+        const matchingCategory = categories.find(c => 
+          normalizeCategory(c) === normalizedTargetCategory
+        );
+        
+        if (matchingCategory) {
+          setActiveCategoryTab(matchingCategory);
+          handleFilterChange("", matchingCategory);
+        } else {
+          console.log(`Category not found: ${category}`);
+        }
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('selectDuaCategory', handleCategorySelection as EventListener);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('selectDuaCategory', handleCategorySelection as EventListener);
+    };
+  }, [categories]); // Re-add listener when categories change
+
+
   // Add cleanup function to prevent state updates after unmount
   useEffect(() => {
     return () => {
@@ -115,14 +151,6 @@ const DuasLibrary = () => {
     const search = searchParams.get("search");
     const id = searchParams.get("id");
 
-    if (category && categories.includes(category)) {
-      setActiveCategoryTab(category);
-    }
-
-    if (search) {
-      setSearchTerm(search);
-    }
-
     if (id) {
       const dua = duas.find(d => d.id === id);
       if (dua) {
@@ -131,12 +159,35 @@ const DuasLibrary = () => {
       }
     }
 
-    handleFilterChange(search || "", category || activeCategoryTab);
-  }, [searchParams, duas]);
+    if (category) {
+      // Set the active tab to the selected category
+      setActiveCategoryTab(category);
+      
+      // Apply both category and search filters
+      handleFilterChange(search || "", category);
+    } else if (search) {
+      setSearchTerm(search);
+      handleFilterChange(search, activeCategoryTab);
+    } else {
+      // If no filters, just apply the current active category
+      handleFilterChange("", activeCategoryTab);
+    }
+  }, [searchParams, duas, categories]);
 
   const handleFilterChange = (search: string, category: string) => {
-    let result = duas;
+    // Start with the full list of duas
+    let result = [...duas];
 
+    // Apply category filter first (this is more efficient)
+    if (category && category !== "all") {
+      const normalizedFilterCategory = normalizeCategory(category);
+      result = result.filter((dua) => {
+        const normalizedDuaCategory = normalizeCategory(dua.category);
+        return normalizedDuaCategory === normalizedFilterCategory || dua.category === category;
+      });
+    }
+
+    // Then apply search filter on the already reduced list
     if (search) {
       result = result.filter((dua) => {
         const translationToCheck =
@@ -147,14 +198,10 @@ const DuasLibrary = () => {
             : dua.englishTranslation;
 
         return (
-          translationToCheck.toLowerCase().includes(search.toLowerCase()) ||
+          translationToCheck?.toLowerCase().includes(search.toLowerCase()) ||
           dua.transliteration?.toLowerCase().includes(search.toLowerCase())
         );
       });
-    }
-
-    if (category && category !== "all") {
-      result = result.filter((dua) => dua.category === category);
     }
 
     setFilteredDuas(result);
