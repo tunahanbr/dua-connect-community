@@ -60,6 +60,27 @@ const DuasLibrary = () => {
     };
   }, [categories]); // Re-add listener when categories change
 
+    // Add event listener for search all duas from SpotlightSearch
+    useEffect(() => {
+      const handleSearchAllDuas = (event: CustomEvent) => {
+        const { searchTerm } = event.detail;
+        console.log(`DuasLibrary received search request: ${searchTerm}`);
+        
+        // Set the search term
+        setSearchTerm(searchTerm);
+        
+        // Apply the search filter
+        handleFilterChange(searchTerm, activeCategoryTab);
+      };
+  
+      // Add event listener
+      window.addEventListener('searchAllDuas', handleSearchAllDuas as EventListener);
+      
+      // Clean up
+      return () => {
+        window.removeEventListener('searchAllDuas', handleSearchAllDuas as EventListener);
+      };
+    }, [activeCategoryTab]); // Re-add listener when active category changes
 
   // Add cleanup function to prevent state updates after unmount
   useEffect(() => {
@@ -189,17 +210,25 @@ const DuasLibrary = () => {
 
     // Then apply search filter on the already reduced list
     if (search) {
+      const searchLower = search.toLowerCase();
       result = result.filter((dua) => {
-        const translationToCheck =
-          language === "tr"
-            ? dua.turkishTranslation
-            : language === "de"
-            ? dua.germanTranslation
-            : dua.englishTranslation;
-
+        // Check all text fields for the search term
+        const englishText = dua.englishTranslation || '';
+        const turkishText = dua.turkishTranslation || '';
+        const germanText = dua.germanTranslation || '';
+        const arabicText = dua.arabicText || '';
+        const transliterationText = dua.transliteration || '';
+        const sourceText = dua.source || '';
+        const categoryText = dua.category || '';
+        
         return (
-          translationToCheck?.toLowerCase().includes(search.toLowerCase()) ||
-          dua.transliteration?.toLowerCase().includes(search.toLowerCase())
+          englishText.toLowerCase().includes(searchLower) ||
+          turkishText.toLowerCase().includes(searchLower) ||
+          germanText.toLowerCase().includes(searchLower) ||
+          arabicText.toLowerCase().includes(searchLower) ||
+          transliterationText.toLowerCase().includes(searchLower) ||
+          sourceText.toLowerCase().includes(searchLower) ||
+          categoryText.toLowerCase().includes(searchLower)
         );
       });
     }
@@ -321,3 +350,4 @@ const DuasLibrary = () => {
 };
 
 export default DuasLibrary;
+

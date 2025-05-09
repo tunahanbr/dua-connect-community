@@ -92,26 +92,37 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
         item => item.category && item.category.toLowerCase().trim() === lowerSearchTerm
       );
       console.log(`Found ${categoryItems.length} items for category "${categoryMatch}"`); // Debug log
-      setSearchResults(categoryItems);
+      
+      // Limit to first 5 items for display in spotlight
+      setSearchResults(categoryItems.slice(0, 5));
     } else {
       // Otherwise do a regular search across all fields
       const filtered = items.filter(item => {
-        // Get the appropriate translation based on current language
-        const translationToCheck = language === 'tr' 
-          ? item.turkishTranslation 
-          : language === 'de' 
-            ? item.germanTranslation 
-            : item.englishTranslation;
-            
+        // Get all translations based on available languages
+        const englishText = (item.englishTranslation || '').toLowerCase();
+        const turkishText = (item.turkishTranslation || '').toLowerCase();
+        const germanText = (item.germanTranslation || '').toLowerCase();
+        const arabicText = (item.arabicText || '').toLowerCase();
+        const transliterationText = (item.transliteration || '').toLowerCase();
+        const categoryText = (item.category || '').toLowerCase();
+        const titleText = (item.title || '').toLowerCase();
+        const sourceText = (item.source || '').toLowerCase();
+        
+        // Check if search term exists in any text field
         return (
-          translationToCheck?.toLowerCase().includes(lowerSearchTerm) || 
-          item.category?.toLowerCase().includes(lowerSearchTerm) ||
-          item.arabicText?.toLowerCase().includes(lowerSearchTerm) ||
-          item.transliteration?.toLowerCase().includes(lowerSearchTerm) ||
-          item.title?.toLowerCase().includes(lowerSearchTerm)
+          englishText.includes(lowerSearchTerm) || 
+          turkishText.includes(lowerSearchTerm) || 
+          germanText.includes(lowerSearchTerm) || 
+          arabicText.includes(lowerSearchTerm) || 
+          transliterationText.includes(lowerSearchTerm) || 
+          categoryText.includes(lowerSearchTerm) ||
+          titleText.includes(lowerSearchTerm) ||
+          sourceText.includes(lowerSearchTerm)
         );
       });
-      setSearchResults(filtered);
+      
+      // Limit to first 5 items for display in spotlight
+      setSearchResults(filtered.slice(0, 5));
     }
   }, [searchTerm, items, categories, language]);
 
@@ -124,8 +135,25 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
   };
 
   const handleViewAll = () => {
+    console.log(`Viewing all results for: ${searchTerm}`);
+    // Navigate to the duas page with search parameter
     navigate(`/duas?search=${encodeURIComponent(searchTerm)}`);
+    
+    // Close the spotlight search
     onOpenChange(false);
+    
+    // Use a small timeout to ensure the navigation completes
+    setTimeout(() => {
+      // Create a custom event to communicate with DuasLibrary
+      const event = new CustomEvent('searchAllDuas', { 
+        detail: { searchTerm } 
+      });
+      
+      // Dispatch the event to the window so DuasLibrary can listen for it
+      window.dispatchEvent(event);
+      
+      console.log(`Dispatched searchAllDuas event for: ${searchTerm}`);
+    }, 100);
   };
 
   // Handle category selection
@@ -258,7 +286,7 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
             ))}
           </CommandGroup>
           
-          {searchTerm && searchResults.length > 0 && (
+          {searchTerm && (
             <>
               <CommandSeparator />
               <CommandGroup>
