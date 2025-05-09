@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -29,7 +28,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-12">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <span className="text-base font-bold text-islamic-green">Make Dua</span>
+              <span className="text-base font-bold text-islamic-green">Duara</span>
             </Link>
           </div>
           

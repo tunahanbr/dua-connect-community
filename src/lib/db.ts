@@ -7,14 +7,19 @@ const adminPassword = import.meta.env.VITE_POCKETBASE_ADMIN_PASSWORD || '';
 
 const pb = new PocketBase(pocketbaseUrl);
 
-// Authenticate as admin if credentials are provided
-if (adminEmail && adminPassword) {
-  try {
-    await pb.admins.authWithPassword(adminEmail, adminPassword);
-  } catch (error) {
-    console.error('Failed to authenticate with PocketBase:', error);
+// Initialize admin authentication
+const initializeAdminAuth = async () => {
+  if (adminEmail && adminPassword) {
+    try {
+      await pb.admins.authWithPassword(adminEmail, adminPassword);
+    } catch (error) {
+      console.error('Failed to authenticate with PocketBase:', error);
+    }
   }
-}
+};
+
+// Call the initialization function
+initializeAdminAuth();
 
 export interface Dua {
   id: string;

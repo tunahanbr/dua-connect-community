@@ -18,6 +18,11 @@ const LanguageSelector = () => {
     { code: 'de', name: 'Deutsch' },
   ];
 
+  const handleLanguageChange = (langCode: Language) => {
+    console.log('Language selector: Changing language to', langCode);
+    setLanguage(langCode);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -30,7 +35,7 @@ const LanguageSelector = () => {
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => setLanguage(lang.code as Language)}
+            onClick={() => handleLanguageChange(lang.code as Language)}
             className={language === lang.code ? 'bg-slate-50 text-islamic-green font-medium' : ''}
           >
             {lang.name}

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslatedCategory } from "@/lib/categoryUtils";
 
 interface DuaCardProps {
   id: string;
@@ -40,25 +41,13 @@ const DuaCard = ({
     }
   };
 
-  // Clean and translate the category
-  const getTranslatedCategory = (category: string | undefined) => {
-    if (!category) return '';
-
-    // Remove any 'category.' prefix (case insensitive) and normalize
-    // This handles both "Category.X" and "category.X" formats
-    const normalizedCategory = category.toLowerCase().replace(/^category\./i, '');
-    
-    // Translate using the normalized category key
-    return t(`category.${normalizedCategory}`);
-  };
-
   return (
     <Card className="overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
       <CardContent className="p-6">
         {category && (
           <div className="mb-4">
             <span className="inline-block bg-green-50 text-islamic-green text-xs px-2.5 py-1 rounded-full">
-              {getTranslatedCategory(category)}
+              {getTranslatedCategory(category, t)}
             </span>
           </div>
         )}

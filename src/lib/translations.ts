@@ -1,4 +1,4 @@
-const translations = {
+export const translations = {
   en: {
     nav: {
       home: 'Home',
@@ -10,28 +10,29 @@ const translations = {
       select: 'Select language'
     },
     home: {
-      title: 'Find and Share Duas',
-      subtitle: 'A community-driven platform for Islamic prayers and supplications',
+      title: 'Connect Through Prayer',
+      subtitle: 'Discover, learn, and share duas in a supportive community',
       searchShortcut: 'Press ⌘K to search',
       browseDuas: 'Browse Duas',
-      requestDua: 'Request Dua',
+      requestDua: 'Request Prayer',
       howItWorks: 'How It Works',
+      howItWorksDescription: 'Experience the power of collective prayer through our simple and intuitive platform',
       featuredContent: 'Featured Content',
+      featuredContentDescription: 'Explore our latest additions and community prayers',
       featuredDua: 'Featured Dua',
-      recentRequest: 'Recent Request',
-      viewAllDuas: 'View All Duas',
-      viewAllRequests: 'View All Requests',
-      noDuasAvailable: 'No duas available yet',
-      noRequestsAvailable: 'No requests available yet',
+      recentRequest: 'Recent Prayer Request',
+      viewAll: 'View All',
+      noDuasAvailable: 'No duas available at the moment',
+      noRequestsAvailable: 'No prayer requests available at the moment',
       backToTop: 'Back to top',
       features: {
         findDuas: {
           title: 'Find Duas',
-          description: 'Search our collection of authentic duas for every occasion'
+          description: 'Search and discover authentic duas from various sources'
         },
         learnMemorize: {
           title: 'Learn & Memorize',
-          description: 'Read the Arabic text with translations and transliterations'
+          description: 'Study duas with translations and transliterations'
         },
         requestPrayers: {
           title: 'Request Prayers',
@@ -39,7 +40,27 @@ const translations = {
         },
         supportOthers: {
           title: 'Support Others',
-          description: 'Make dua for others and strengthen the ummah'
+          description: 'Make dua for others and strengthen community bonds'
+        }
+      },
+      yourJourney: 'Your Journey with Duara',
+      journeyDescription: 'Follow these steps to begin your spiritual journey with our community',
+      journey: {
+        discover: {
+          title: 'Discover',
+          description: 'Explore our collection of authentic duas and find what resonates with you'
+        },
+        learn: {
+          title: 'Learn',
+          description: 'Study the meanings and proper pronunciation of duas'
+        },
+        connect: {
+          title: 'Connect',
+          description: 'Share your prayer requests and connect with others'
+        },
+        grow: {
+          title: 'Grow',
+          description: 'Deepen your spiritual practice through regular dua and community support'
         }
       },
       quote: {
@@ -54,7 +75,8 @@ const translations = {
       noResults: 'No duas found',
       source: 'Source',
       showTransliteration: 'Show Transliteration',
-      hideTransliteration: 'Hide Transliteration'
+      hideTransliteration: 'Hide Transliteration',
+      categories: 'Categories'
     },
     requests: {
       title: 'Dua Requests',
@@ -98,13 +120,60 @@ const translations = {
       provision: 'Provision',
       knowledge: 'Knowledge',
       request: 'Request',
-      uncategorized: 'Uncategorized'
+      uncategorized: 'Uncategorized',
+      repentance: 'Repentance'
     },
     matchingCategories: 'Matching Categories',
-    categories: 'Categories',
-    category: 'Category',
     viewAllResults: 'View all results',
-    results: 'Results'
+    results: 'Results',
+    about: {
+      title: 'About Duara',
+      subtitle: 'A community-driven platform for sharing and discovering Islamic duas',
+      mission: {
+        title: 'Our Mission',
+        paragraph1: 'Duara aims to create a vibrant community where Muslims can easily find, share, and request duas. We believe in the power of collective prayer and the importance of supporting one another in our spiritual journey.',
+        paragraph2: 'Our platform brings together authentic duas from reliable sources, making them accessible to everyone in multiple languages.'
+      },
+      offerings: {
+        title: 'What We Offer',
+        library: {
+          title: 'Comprehensive Dua Library',
+          description: 'Access a growing collection of authentic duas with translations and transliterations'
+        },
+        search: {
+          title: 'Smart Search',
+          description: 'Find specific duas quickly with our powerful search functionality'
+        },
+        request: {
+          title: 'Dua Requests',
+          description: 'Share your prayer requests with the community and receive support'
+        },
+        support: {
+          title: 'Community Support',
+          description: 'Connect with others and strengthen the bonds of the ummah through dua'
+        }
+      },
+      howto: {
+        title: 'How to Use Duara',
+        step1: {
+          title: 'Browse Duas',
+          description: 'Explore our collection of duas by category or use the search function'
+        },
+        step2: {
+          title: 'Make Requests',
+          description: 'Share your prayer requests with the community'
+        },
+        step3: {
+          title: 'Support Others',
+          description: 'Make dua for others and strengthen the community'
+        }
+      },
+      expanding: {
+        title: 'Growing Together',
+        paragraph1: 'We are continuously working to expand our collection of duas and improve our platform based on community feedback.',
+        paragraph2: 'Join us in building a stronger, more connected Muslim community through the power of dua.'
+      }
+    }
   },
   tr: {
     nav: {
@@ -117,42 +186,66 @@ const translations = {
       select: 'Dil seçin'
     },
     home: {
-      title: 'Duaları Bul ve Paylaş',
-      subtitle: 'İslami dualar ve yakarışlar için topluluk odaklı bir platform',
-      searchShortcut: 'Aramak için ⌘K tuşuna basın',
-      browseDuas: 'Duaları Görüntüle',
-      requestDua: 'Dua İsteği',
+      title: 'Dua ile Bağlanın',
+      subtitle: 'Destekleyici bir toplulukta duaları keşfedin, öğrenin ve paylaşın',
+      searchShortcut: 'Aramak için ⌘K ya basın',
+      browseDuas: 'Duaları Keşfet',
+      requestDua: 'Dua İste',
       howItWorks: 'Nasıl Çalışır',
+      howItWorksDescription: 'Basit ve sezgisel platformumuz aracılığıyla toplu duanın gücünü deneyimleyin',
       featuredContent: 'Öne Çıkan İçerik',
+      featuredContentDescription: 'En son eklenenleri ve topluluk dualarını keşfedin',
       featuredDua: 'Öne Çıkan Dua',
-      recentRequest: 'Son İstek',
-      viewAllDuas: 'Tüm Duaları Görüntüle',
-      viewAllRequests: 'Tüm İstekleri Görüntüle',
-      noDuasAvailable: 'Henüz dua bulunmuyor',
-      noRequestsAvailable: 'Henüz istek bulunmuyor',
+      recentRequest: 'Son Dua İsteği',
+      viewAll: 'Tümünü Gör',
+      noDuasAvailable: 'Şu anda dua bulunmuyor',
+      noRequestsAvailable: 'Şu anda dua isteği bulunmuyor',
       backToTop: 'Başa dön',
       features: {
         findDuas: {
           title: 'Duaları Bul',
-          description: 'Her durum için otantik dualar koleksiyonumuzda arama yapın'
+          description: 'Çeşitli kaynaklardan otantik duaları arayın ve keşfedin'
         },
         learnMemorize: {
-          title: 'Öğren ve Ezberle',
-          description: 'Arapça metni çeviriler ve transliterasyonlarla okuyun'
+          title: 'Öğren & Ezberle',
+          description: 'Çeviriler ve transkripsiyonlarla duaları öğrenin'
         },
         requestPrayers: {
-          title: 'Dua İsteği',
+          title: 'Dua İste',
           description: 'Dua isteklerinizi toplulukla paylaşın'
         },
         supportOthers: {
-          title: 'Diğerlerini Destekle',
-          description: 'Başkaları için dua edin ve ümmeti güçlendirin'
+          title: 'Başkalarına Destek Ol',
+          description: 'Başkaları için dua edin ve topluluk bağlarını güçlendirin'
         }
       },
-      quote: {
-        text: 'Bir Müslümanın yokluğunda kardeşi için yaptığı dua kabul edilir. Yanında bir melek görevlendirilir. Kardeşi için dua ettiğinde melek "Amin, ve aynısı senin için de" der.',
-        source: 'Sahih Müslim'
-      }
+      yourJourney: 'Duara ile Yolculuğunuz',
+      journeyDescription: 'Topluluğumuzla manevi yolculuğunuza başlamak için bu adımları izleyin',
+      journey: {
+        discover: {
+          title: 'Keşfet',
+          description: 'Otantik dualar koleksiyonumuzu keşfedin ve size hitap edenleri bulun'
+        },
+        learn: {
+          title: 'Öğren',
+          description: 'Duaların anlamlarını ve doğru telaffuzunu öğrenin'
+        },
+        connect: {
+          title: 'Bağlan',
+          description: 'Dua isteklerinizi paylaşın ve başkalarıyla bağlantı kurun'
+        },
+        grow: {
+          title: 'Geliş',
+          description: 'Düzenli dua ve topluluk desteği ile manevi uygulamanızı derinleştirin'
+        }
+      },
+      featuredContent: 'Öne Çıkan İçerik',
+      featuredContentDescription: 'En son eklenenleri ve topluluk dualarını keşfedin',
+      featuredDua: 'Öne Çıkan Dua',
+      recentRequest: 'Son Dua İsteği',
+      viewAll: 'Tümünü Gör',
+      noDuasAvailable: 'Şu anda dua bulunmuyor',
+      noRequestsAvailable: 'Şu anda dua isteği bulunmuyor'
     },
     duas: {
       title: 'Dua Kütüphanesi',
@@ -161,7 +254,8 @@ const translations = {
       noResults: 'Dua bulunamadı',
       source: 'Kaynak',
       showTransliteration: 'Transliterasyonu Göster',
-      hideTransliteration: 'Transliterasyonu Gizle'
+      hideTransliteration: 'Transliterasyonu Gizle',
+      categories: 'Kategoriler'
     },
     requests: {
       title: 'Dua İstekleri',
@@ -205,13 +299,64 @@ const translations = {
       provision: 'Rızık',
       knowledge: 'Bilgi',
       request: 'İstek',
-      uncategorized: 'Kategorisiz'
+      wealth: 'Rızık',
+      family: 'Aile',
+      death: 'Ölüm',
+      love: 'Aşk',
+      uncategorized: 'Kategorisiz',
+      repentance: 'Tövbe'
     },
     matchingCategories: 'Eşleşen Kategoriler',
-    categories: 'Kategoriler',
-    category: 'Kategori',
     viewAllResults: 'Tüm sonuçları görüntüle',
-    results: 'Sonuçlar'
+    results: 'Sonuçlar',
+    about: {
+      title: 'Duara Hakkında',
+      subtitle: 'İslami duaları paylaşmak ve keşfetmek için topluluk odaklı bir platform',
+      mission: {
+        title: 'Misyonumuz',
+        paragraph1: 'Duara, Müslümanların kolayca dua bulabileceği, paylaşabileceği ve isteyebileceği canlı bir topluluk oluşturmayı amaçlıyor. Toplu duanın gücüne ve manevi yolculuğumuzda birbirimize destek olmanın önemine inanıyoruz.',
+        paragraph2: 'Platformumuz, güvenilir kaynaklardan alınan otantik duaları bir araya getirerek, herkesin çoklu dil desteğiyle erişimini sağlıyor.'
+      },
+      offerings: {
+        title: 'Sunduklarımız',
+        library: {
+          title: 'Kapsamlı Dua Kütüphanesi',
+          description: 'Çeviriler ve transliterasyonlarla birlikte otantik duaların büyüyen koleksiyonuna erişin'
+        },
+        search: {
+          title: 'Akıllı Arama',
+          description: 'Güçlü arama fonksiyonumuzla hızlıca spesifik dualar bulun'
+        },
+        request: {
+          title: 'Dua İstekleri',
+          description: 'Dua isteklerinizi toplulukla paylaşın ve destek alın'
+        },
+        support: {
+          title: 'Topluluk Desteği',
+          description: 'Dua yoluyla başkalarıyla bağlantı kurun ve ümmet bağlarını güçlendirin'
+        }
+      },
+      howto: {
+        title: 'Duara\'yı Nasıl Kullanılır',
+        step1: {
+          title: 'Duaları Keşfedin',
+          description: 'Kategoriye göre dualarımızı keşfedin veya arama fonksiyonunu kullanın'
+        },
+        step2: {
+          title: 'İstekte Bulunun',
+          description: 'Dua isteklerinizi toplulukla paylaşın'
+        },
+        step3: {
+          title: 'Diğerlerini Destekleyin',
+          description: 'Başkaları için dua edin ve topluluğu güçlendirin'
+        }
+      },
+      expanding: {
+        title: 'Birlikte Büyüyoruz',
+        paragraph1: 'Topluluk geri bildirimlerine dayanarak dua koleksiyonumuzu genişletmek ve platformumuzu geliştirmek için sürekli çalışıyoruz.',
+        paragraph2: 'Duanın gücüyle daha güçlü, daha bağlantılı bir Müslüman topluluğu oluşturmak için bize katılın.'
+      }
+    }
   },
   de: {
     nav: {
@@ -224,42 +369,66 @@ const translations = {
       select: 'Sprache auswählen'
     },
     home: {
-      title: 'Bittgebete finden und teilen',
-      subtitle: 'Eine gemeinschaftsbasierte Plattform für islamische Gebete und Bittgebete',
+      title: 'Verbinden Sie sich durch Gebet',
+      subtitle: 'Entdecken, lernen und teilen Sie Duas in einer unterstützenden Gemeinschaft',
       searchShortcut: 'Drücken Sie ⌘K zum Suchen',
-      browseDuas: 'Bittgebete durchsuchen',
-      requestDua: 'Bittgebet anfragen',
-      howItWorks: 'Wie es funktioniert',
+      browseDuas: 'Duas Durchsuchen',
+      requestDua: 'Gebet Anfordern',
+      howItWorks: 'Wie es Funktioniert',
+      howItWorksDescription: 'Erleben Sie die Kraft des gemeinsamen Gebets durch unsere einfache und intuitive Plattform',
       featuredContent: 'Ausgewählte Inhalte',
-      featuredDua: 'Ausgewähltes Bittgebet',
-      recentRequest: 'Aktuelle Anfrage',
-      viewAllDuas: 'Alle Bittgebete anzeigen',
-      viewAllRequests: 'Alle Anfragen anzeigen',
-      noDuasAvailable: 'Noch keine Bittgebete verfügbar',
-      noRequestsAvailable: 'Noch keine Anfragen verfügbar',
+      featuredContentDescription: 'Entdecken Sie unsere neuesten Ergänzungen und Gemeinschaftsgebete',
+      featuredDua: 'Ausgewähltes Dua',
+      recentRequest: 'Letzte Gebetsanfrage',
+      viewAll: 'Alle Anzeigen',
+      noDuasAvailable: 'Derzeit keine Duas verfügbar',
+      noRequestsAvailable: 'Derzeit keine Gebetsanfragen verfügbar',
       backToTop: 'Nach oben',
       features: {
         findDuas: {
-          title: 'Bittgebete finden',
-          description: 'Durchsuchen Sie unsere Sammlung authentischer Bittgebete für jeden Anlass'
+          title: 'Duas Finden',
+          description: 'Suchen und entdecken Sie authentische Duas aus verschiedenen Quellen'
         },
         learnMemorize: {
-          title: 'Lernen & Auswendig lernen',
-          description: 'Lesen Sie den arabischen Text mit Übersetzungen und Transliterationen'
+          title: 'Lernen & Auswendig',
+          description: 'Studieren Sie Duas mit Übersetzungen und Transliterationen'
         },
         requestPrayers: {
-          title: 'Gebete anfragen',
+          title: 'Gebete Anfordern',
           description: 'Teilen Sie Ihre Gebetsanliegen mit der Gemeinschaft'
         },
         supportOthers: {
-          title: 'Andere unterstützen',
-          description: 'Beten Sie für andere und stärken Sie die Gemeinschaft'
+          title: 'Andere Unterstützen',
+          description: 'Beten Sie für andere und stärken Sie die Gemeinschaftsbande'
         }
       },
-      quote: {
-        text: 'Das Bittgebet eines Muslims für seinen Bruder in dessen Abwesenheit wird bereitwillig angenommen. Ein Engel wird an seine Seite gestellt. Wenn er für seinen Bruder betet, sagt der Engel: "Amin, und dasselbe für dich auch."',
-        source: 'Sahih Muslim'
-      }
+      yourJourney: 'Ihre Reise mit Duara',
+      journeyDescription: 'Folgen Sie diesen Schritten, um Ihre spirituelle Reise mit unserer Gemeinschaft zu beginnen',
+      journey: {
+        discover: {
+          title: 'Entdecken',
+          description: 'Erkunden Sie unsere Sammlung authentischer Duas und finden Sie, was Sie anspricht'
+        },
+        learn: {
+          title: 'Lernen',
+          description: 'Studieren Sie die Bedeutungen und die richtige Aussprache von Duas'
+        },
+        connect: {
+          title: 'Verbinden',
+          description: 'Teilen Sie Ihre Gebetsanliegen und verbinden Sie sich mit anderen'
+        },
+        grow: {
+          title: 'Wachsen',
+          description: 'Vertiefen Sie Ihre spirituelle Praxis durch regelmäßiges Dua und Gemeinschaftsunterstützung'
+        }
+      },
+      featuredContent: 'Ausgewählte Inhalte',
+      featuredContentDescription: 'Entdecken Sie unsere neuesten Ergänzungen und Gemeinschaftsgebete',
+      featuredDua: 'Ausgewähltes Dua',
+      recentRequest: 'Letzte Gebetsanfrage',
+      viewAll: 'Alle Anzeigen',
+      noDuasAvailable: 'Derzeit keine Duas verfügbar',
+      noRequestsAvailable: 'Derzeit keine Gebetsanfragen verfügbar'
     },
     duas: {
       title: 'Bittgebete-Bibliothek',
@@ -268,7 +437,8 @@ const translations = {
       noResults: 'Keine Bittgebete gefunden',
       source: 'Quelle',
       showTransliteration: 'Transliteration anzeigen',
-      hideTransliteration: 'Transliteration ausblenden'
+      hideTransliteration: 'Transliteration ausblenden',
+      categories: 'Kategorien'
     },
     requests: {
       title: 'Gebetsanliegen',
@@ -312,13 +482,64 @@ const translations = {
       provision: 'Versorgung',
       knowledge: 'Wissen',
       request: 'Anfrage',
-      uncategorized: 'Nicht kategorisiert'
+      uncategorized: 'Nicht kategorisiert',
+      wealth: 'Reichtum',
+      family: 'Familie',
+      death: 'Tod',
+      love: 'Liebe',
+      repentance: 'Reue'
     },
     matchingCategories: 'Passende Kategorien',
-    categories: 'Kategorien',
-    category: 'Kategorie',
     viewAllResults: 'Alle Ergebnisse anzeigen',
-    results: 'Ergebnisse'
+    results: 'Ergebnisse',
+    about: {
+      title: 'Über Duara',
+      subtitle: 'Eine gemeinschaftsbasierte Plattform zum Teilen und Entdecken islamischer Bittgebete',
+      mission: {
+        title: 'Unsere Mission',
+        paragraph1: 'Duara zielt darauf ab, eine lebendige Gemeinschaft zu schaffen, in der Muslime leicht Bittgebete finden, teilen und anfordern können. Wir glauben an die Kraft des gemeinsamen Gebets und die Bedeutung gegenseitiger Unterstützung auf unserem spirituellen Weg.',
+        paragraph2: 'Unsere Plattform bringt authentische Bittgebete aus zuverlässigen Quellen zusammen und macht sie für jeden in mehreren Sprachen zugänglich.'
+      },
+      offerings: {
+        title: 'Was wir anbieten',
+        library: {
+          title: 'Umfassende Bittgebet-Bibliothek',
+          description: 'Zugang zu einer wachsenden Sammlung authentischer Bittgebete mit Übersetzungen und Transliterationen'
+        },
+        search: {
+          title: 'Intelligente Suche',
+          description: 'Finden Sie schnell spezifische Bittgebete mit unserer leistungsstarken Suchfunktion'
+        },
+        request: {
+          title: 'Bittgebet-Anfragen',
+          description: 'Teilen Sie Ihre Gebetsanfragen mit der Gemeinschaft und erhalten Sie Unterstützung'
+        },
+        support: {
+          title: 'Gemeinschaftsunterstützung',
+          description: 'Verbinden Sie sich mit anderen und stärken Sie die Bande der Umma durch Bittgebete'
+        }
+      },
+      howto: {
+        title: 'Wie man Duara nutzt',
+        step1: {
+          title: 'Bittgebete durchsuchen',
+          description: 'Entdecken Sie unsere Sammlung von Bittgebeten nach Kategorie oder nutzen Sie die Suchfunktion'
+        },
+        step2: {
+          title: 'Anfragen stellen',
+          description: 'Teilen Sie Ihre Gebetsanfragen mit der Gemeinschaft'
+        },
+        step3: {
+          title: 'Andere unterstützen',
+          description: 'Beten Sie für andere und stärken Sie die Gemeinschaft'
+        }
+      },
+      expanding: {
+        title: 'Gemeinsam wachsen',
+        paragraph1: 'Wir arbeiten kontinuierlich daran, unsere Sammlung von Bittgebeten zu erweitern und unsere Plattform basierend auf Gemeinschaftsfeedback zu verbessern.',
+        paragraph2: 'Schließen Sie sich uns an, um durch die Kraft des Bittgebets eine stärkere, besser vernetzte muslimische Gemeinschaft aufzubauen.'
+      }
+    }
   }
 };
 

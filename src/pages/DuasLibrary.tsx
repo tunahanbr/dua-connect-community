@@ -9,6 +9,12 @@ import { Button } from "@/components/ui/button";
 import { useSpotlight } from "@/components/search/SpotlightProvider";
 import { db, type Dua } from "@/lib/db";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { normalizeCategory, getTranslatedCategory } from "@/lib/categoryUtils";
+
+// Add this interface at the top of the file, after the imports
+interface TransformedDua extends Dua {
+  originalCategory?: string;
+}
 
 const DuasLibrary = () => {
   const [searchParams] = useSearchParams();
@@ -24,6 +30,21 @@ const DuasLibrary = () => {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
   const isMounted = useRef(true);
+
+  // Add debug logging for language changes
+  useEffect(() => {
+    console.log('Current language:', language);
+    console.log('Categories:', categories);
+    console.log('Sample category translation:', getTranslatedCategory('general', t));
+  }, [language, categories, t]);
+
+  // Force re-render of categories when language changes
+  useEffect(() => {
+    if (categories.length > 0) {
+      // This will trigger a re-render of the categories
+      setCategories([...categories]);
+    }
+  }, [language]);
 
   // Add event listener for category selection from SpotlightSearch
   useEffect(() => {
@@ -58,7 +79,7 @@ const DuasLibrary = () => {
     return () => {
       window.removeEventListener('selectDuaCategory', handleCategorySelection as EventListener);
     };
-  }, [categories]); // Re-add listener when categories change
+  }, [categories, language]); // Add language as a dependency
 
     // Add event listener for search all duas from SpotlightSearch
     useEffect(() => {
@@ -139,13 +160,13 @@ const DuasLibrary = () => {
       // Only update state if component is still mounted
       if (!isMounted.current) return;
 
-      // Make sure to normalize all category values
+      // Make sure to normalize all category values while preserving the original data
       const transformedDuas = result.map(dua => ({
         ...dua,
         // Normalize the category but preserve the original for display purposes
         originalCategory: dua.category,
         category: normalizeCategory(dua.category)
-      }));
+      })) as unknown as TransformedDua[];
 
       const uniqueCategories = ['all', ...new Set(transformedDuas.map(dua => dua.category))];
 
@@ -153,7 +174,6 @@ const DuasLibrary = () => {
       setFilteredDuas(transformedDuas);
       setCategories(uniqueCategories);
       
-      // Debug log to check category values
     } catch (error) {
       // Only update state if component is still mounted
       if (!isMounted.current) return;
@@ -181,19 +201,15 @@ const DuasLibrary = () => {
     }
 
     if (category) {
-      // Set the active tab to the selected category
       setActiveCategoryTab(category);
-      
-      // Apply both category and search filters
       handleFilterChange(search || "", category);
     } else if (search) {
       setSearchTerm(search);
       handleFilterChange(search, activeCategoryTab);
     } else {
-      // If no filters, just apply the current active category
       handleFilterChange("", activeCategoryTab);
     }
-  }, [searchParams, duas, categories]);
+  }, [searchParams, duas, categories, language]);
 
   const handleFilterChange = (search: string, category: string) => {
     // Start with the full list of duas
@@ -239,12 +255,6 @@ const DuasLibrary = () => {
   const handleTabChange = (value: string) => {
     setActiveCategoryTab(value);
     handleFilterChange(searchTerm, value);
-  };
-
-  const getTranslatedCategory = (category: string) => {
-    if (category === "all") return t("category.all");
-    const normalizedCategory = normalizeCategory(category);
-    return t(`category.${normalizedCategory}`);
   };
 
   return (
@@ -300,15 +310,15 @@ const DuasLibrary = () => {
                     onScroll={checkScrollPosition}
                   >
                     {categories.map((category) => {
-                      // Double check that we're using clean category names for display
-                      const displayCategory = category === 'all' ? 'all' : normalizeCategory(category);
+                      const translatedCategory = getTranslatedCategory(category, t);
+                      console.log(`Rendering category: ${category} -> ${translatedCategory} in ${language}`);
                       return (
                         <TabsTrigger
                           key={category}
                           value={category}
                           className="capitalize data-[state=active]:bg-white/80 data-[state=active]:text-islamic-green text-xs sm:text-sm whitespace-nowrap flex-shrink-0 my-1"
                         >
-                          {t(`category.${displayCategory}`)}
+                          {translatedCategory}
                         </TabsTrigger>
                       );
                     })}
