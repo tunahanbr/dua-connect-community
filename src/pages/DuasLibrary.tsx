@@ -1,71 +1,111 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import DuaCard from "@/components/dua/DuaCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSpotlight } from "@/components/search/SpotlightProvider";
-import { db, type Dua } from '@/lib/db';
+import { db, type Dua } from "@/lib/db";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const DuasLibrary = () => {
   const [searchParams] = useSearchParams();
-  const [duas, setDuas] = useState([]);
-  const [filteredDuas, setFilteredDuas] = useState([]);
-  const [categories, setCategories] = useState(['all']);
+  const [duas, setDuas] = useState<Dua[]>([]);
+  const [filteredDuas, setFilteredDuas] = useState<Dua[]>([]);
+  const [categories, setCategories] = useState<string[]>(['all']);
   const [activeCategoryTab, setActiveCategoryTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { openSearch } = useSpotlight();
+  const { language, t } = useLanguage();
+  const tabsListRef = useRef<HTMLDivElement>(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
 
   useEffect(() => {
     fetchDuas();
   }, []);
 
+  const checkScrollPosition = () => {
+    if (tabsListRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = tabsListRef.current;
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  const scrollLeft = () => {
+    if (tabsListRef.current) {
+      tabsListRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+      setTimeout(checkScrollPosition, 300);
+    }
+  };
+
+  const scrollRight = () => {
+    if (tabsListRef.current) {
+      tabsListRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+      setTimeout(checkScrollPosition, 300);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', checkScrollPosition);
+    return () => window.removeEventListener('resize', checkScrollPosition);
+  }, []);
+
+  useEffect(() => {
+    checkScrollPosition();
+  }, [categories]);
+
+  // Helper function to normalize category names
+  const normalizeCategory = (category) => {
+    if (!category) return 'uncategorized';
+    // Handle both "Category." and "category." prefixes
+    return category.toLowerCase().replace(/^category\./i, '');
+  };
+
   const fetchDuas = async () => {
     try {
       const result = await db.duas.getAll();
-      // Transform the data to match the expected prop names
+
+      // Make sure to normalize all category values
       const transformedDuas = result.map(dua => ({
-        id: dua.id,
-        arabicText: dua.arabicText,
-        englishTranslation: dua.englishTranslation,
-        germanTranslation: dua.germanTranslation,
-        turkishTranslation: dua.turkishTranslation,
-        transliteration: dua.transliteration,
-        source: dua.source,
-        category: dua.category
+        ...dua,
+        // Normalize the category but preserve the original for display purposes
+        originalCategory: dua.category,
+        category: normalizeCategory(dua.category)
       }));
 
-      // Extract unique categories from duas
       const uniqueCategories = ['all', ...new Set(transformedDuas.map(dua => dua.category))];
-      
+
       setDuas(transformedDuas);
       setFilteredDuas(transformedDuas);
       setCategories(uniqueCategories);
       setIsLoading(false);
+      
+      // Debug log to check category values
+      console.log("Categories after processing:", uniqueCategories);
     } catch (error) {
-      console.error('Failed to fetch duas:', error);
+      console.error("Failed to fetch duas:", error);
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    // Handle URL parameters
-    const category = searchParams.get('category');
-    const search = searchParams.get('search');
-    const id = searchParams.get('id');
-    
+    const category = searchParams.get("category");
+    const search = searchParams.get("search");
+    const id = searchParams.get("id");
+
     if (category && categories.includes(category)) {
       setActiveCategoryTab(category);
     }
-    
+
     if (search) {
       setSearchTerm(search);
     }
-    
+
     if (id) {
       const dua = duas.find(d => d.id === id);
       if (dua) {
@@ -73,76 +113,116 @@ const DuasLibrary = () => {
         return;
       }
     }
-    
+
     handleFilterChange(search || "", category || activeCategoryTab);
   }, [searchParams, duas]);
 
   const handleFilterChange = (search: string, category: string) => {
     let result = duas;
-    
+
     if (search) {
-      result = result.filter(
-        (dua) => 
-          dua.englishTranslation.toLowerCase().includes(search.toLowerCase()) ||
-        dua.germanTranslation.toLowerCase().includes(search.toLowerCase()) ||
-        dua.turkishTranslation.toLowerCase().includes(search.toLowerCase()) ||
+      result = result.filter((dua) => {
+        const translationToCheck =
+          language === "tr"
+            ? dua.turkishTranslation
+            : language === "de"
+            ? dua.germanTranslation
+            : dua.englishTranslation;
+
+        return (
+          translationToCheck.toLowerCase().includes(search.toLowerCase()) ||
           dua.transliteration?.toLowerCase().includes(search.toLowerCase())
-      );
+        );
+      });
     }
-    
-    if (category && category !== 'all') {
+
+    if (category && category !== "all") {
       result = result.filter((dua) => dua.category === category);
     }
-    
+
     setFilteredDuas(result);
   };
-  
+
   const handleTabChange = (value: string) => {
     setActiveCategoryTab(value);
     handleFilterChange(searchTerm, value);
   };
-  
+
+  const getTranslatedCategory = (category: string) => {
+    if (category === "all") return t("category.all");
+    const normalizedCategory = normalizeCategory(category);
+    return t(`category.${normalizedCategory}`);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
       <Navbar />
-      
+
       <main className="flex-grow container mx-auto px-4 md:px-6 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 text-center">
-            <h1 className="text-xl md:text-2xl font-bold mb-2">Duas Library</h1>
-            <p className="text-gray-600 mb-4">
-              Find duas for every situation in your life
-            </p>
-            <Button 
+            <h1 className="text-xl md:text-2xl font-bold mb-2">{t("duas.title")}</h1>
+            <p className="text-gray-600 mb-4">{t("duas.subtitle")}</p>
+            <Button
               onClick={openSearch}
-              variant="outline" 
+              variant="outline"
               className="mt-2 border-islamic-green/30 text-islamic-green"
             >
               <Search size={16} className="mr-2" />
-              Search duas (⌘K)
+              {t("duas.search")} (⌘K)
             </Button>
           </div>
-          
+
           <div className="mt-6 mb-4">
-            <Tabs 
-              value={activeCategoryTab} 
-              onValueChange={handleTabChange}
-              className="w-full"
-            >
-              <div className="mb-6 overflow-x-auto pb-2">
-                <TabsList className="flex h-auto p-1">
-                  {categories.map((category) => (
-                    <TabsTrigger 
-                      key={category} 
-                      value={category}
-                      className="capitalize data-[state=active]:bg-white/80 data-[state=active]:text-islamic-green"
-                    >
-                      {category}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
+            <Tabs value={activeCategoryTab} onValueChange={handleTabChange} className="w-full">
+              <div className="mb-6 relative">
+                {showLeftArrow && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 hover:text-islamic-green hover:bg-transparent"
+                    onClick={scrollLeft}
+                    aria-label="Scroll left"
+                  >
+                    <ChevronLeft size={16} />
+                  </Button>
+                )}
+
+                {showRightArrow && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 hover:text-islamic-green hover:bg-transparent"
+                    onClick={scrollRight}
+                    aria-label="Scroll right"
+                  >
+                    <ChevronRight size={16} />
+                  </Button>
+                )}
+
+                <div className="px-8">
+                  <TabsList
+                    ref={tabsListRef}
+                    className="flex h-auto p-1 w-full justify-start gap-2 overflow-x-auto scrollbar-hide"
+                    onScroll={checkScrollPosition}
+                  >
+                    {categories.map((category) => {
+                      // Double check that we're using clean category names for display
+                      const displayCategory = category === 'all' ? 'all' : normalizeCategory(category);
+                      return (
+                        <TabsTrigger
+                          key={category}
+                          value={category}
+                          className="capitalize data-[state=active]:bg-white/80 data-[state=active]:text-islamic-green text-xs sm:text-sm whitespace-nowrap flex-shrink-0 my-1"
+                        >
+                          {t(`category.${displayCategory}`)}
+                        </TabsTrigger>
+                      );
+                    })}
+                  </TabsList>
+                </div>
               </div>
-              
+
               {categories.map((category) => (
                 <TabsContent key={category} value={category} className="mt-0">
                   {isLoading ? (
@@ -161,7 +241,7 @@ const DuasLibrary = () => {
                     </div>
                   ) : (
                     <div className="text-center py-12">
-                      <p className="text-gray-500">No duas found matching your filters.</p>
+                      <p className="text-gray-500">{t("duas.noResults")}</p>
                     </div>
                   )}
                 </TabsContent>
@@ -170,7 +250,7 @@ const DuasLibrary = () => {
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

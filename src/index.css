@@ -110,3 +110,14 @@
     @apply w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-islamic-green focus:ring-1 focus:ring-islamic-green/20 focus:outline-none;
   }
 }
+
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari and Opera */
+}

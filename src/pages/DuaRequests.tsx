@@ -7,6 +7,7 @@ import DuaRequestForm from "@/components/request/DuaRequestForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, MessageSquare, Loader2, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const DuaRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -15,6 +16,8 @@ const DuaRequests = () => {
   const [error, setError] = useState(null);
   const { toast } = useToast();
   const mountedRef = useRef(true);
+  // Add this line to get the translation function
+  const { t } = useLanguage();
 
   const fetchRequests = useCallback(async (isInitialLoad = false) => {
     // Reset error state
@@ -146,7 +149,7 @@ const DuaRequests = () => {
       return (
         <div className="flex flex-col items-center justify-center py-12">
           <Loader2 className="w-8 h-8 text-islamic-green animate-spin mb-4" />
-          <p className="text-gray-600">Loading requests...</p>
+          <p className="text-gray-600">{t('requests.loading')}</p>
         </div>
       );
     }
@@ -160,7 +163,7 @@ const DuaRequests = () => {
             className="text-islamic-green hover:text-islamic-dark flex items-center justify-center mx-auto px-4 py-2 bg-white rounded-md shadow-sm hover:bg-gray-50 transition-colors"
           >
             <RefreshCw size={16} className="mr-2" />
-            Try again
+            {t('requests.tryAgain')}
           </button>
         </div>
       );
@@ -169,7 +172,7 @@ const DuaRequests = () => {
     if (requests.length === 0) {
       return (
         <div className="text-center py-8 border border-gray-100 bg-gray-50 rounded-lg">
-          <p className="text-gray-600">No requests found</p>
+          <p className="text-gray-600">{t('requests.noRequests')}</p>
         </div>
       );
     }
@@ -202,9 +205,9 @@ const DuaRequests = () => {
                 <MessageSquare size={16} />
               </span>
             </div>
-            <h1 className="text-xl md:text-2xl font-bold mb-2">Request Duas</h1>
+            <h1 className="text-xl md:text-2xl font-bold mb-2">{t('requests.title')}</h1>
             <p className="text-gray-600 text-sm">
-              Share your request and make dua for others in our community
+              {t('requests.subtitle')}
             </p>
           </div>
           
@@ -216,11 +219,11 @@ const DuaRequests = () => {
             <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto mb-6 bg-slate-100/80 p-1">
               <TabsTrigger value="browse" className="data-[state=active]:bg-white data-[state=active]:text-islamic-green">
                 <Heart size={16} className="mr-2" />
-                Browse Requests
+                {t('requests.browseRequests')}
               </TabsTrigger>
               <TabsTrigger value="create" className="data-[state=active]:bg-white data-[state=active]:text-islamic-green">
                 <MessageSquare size={16} className="mr-2" />
-                Create Request
+                {t('requests.createRequest')}
               </TabsTrigger>
             </TabsList>
             

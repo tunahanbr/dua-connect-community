@@ -5,10 +5,15 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSpotlight } from "@/components/search/SpotlightProvider";
 
+// Import the LanguageSelector component
+import LanguageSelector from "./LanguageSelector";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const { toggleSearch } = useSpotlight();
+  const { t } = useLanguage(); // Add this line to get the translation function
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -31,20 +36,28 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
             <Link to="/" className={`px-2 py-1 rounded-full text-sm font-medium transition-colors ${isActive('/') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
-              Home
+              {t('nav.home')}
             </Link>
             <Link to="/duas" className={`px-2 py-1 rounded-full text-sm font-medium transition-colors ${isActive('/duas') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
-              Duas
+              {t('nav.duas')}
             </Link>
             <Link to="/requests" className={`px-2 py-1 rounded-full text-sm font-medium transition-colors ${isActive('/requests') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
-              Requests
+              {t('nav.requests')}
             </Link>
             <Link to="/about" className={`px-2 py-1 rounded-full text-sm font-medium transition-colors ${isActive('/about') ? 'bg-islamic-light text-islamic-green' : 'text-gray-600 hover:bg-slate-50'}`}>
-              About
+              {t('nav.about')}
             </Link>
+            
+            {/* Add the LanguageSelector here */}
+            <div className="ml-2">
+              <LanguageSelector />
+            </div>
           </div>
           
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center">
+            {/* Add the LanguageSelector here for mobile */}
+            <LanguageSelector />
+            
             <Button 
               variant="ghost" 
               size="icon" 
@@ -67,28 +80,28 @@ const Navbar = () => {
               className={`block py-2 px-3 rounded-full text-sm ${isActive('/') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
               onClick={toggleMenu}
             >
-              Home
+              {t('nav.home')}
             </Link>
             <Link 
               to="/duas" 
               className={`block py-2 px-3 rounded-full text-sm ${isActive('/duas') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
               onClick={toggleMenu}
             >
-              Duas
+              {t('nav.duas')}
             </Link>
             <Link 
               to="/requests" 
               className={`block py-2 px-3 rounded-full text-sm ${isActive('/requests') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
               onClick={toggleMenu}
             >
-              Requests
+              {t('nav.requests')}
             </Link>
             <Link 
               to="/about" 
               className={`block py-2 px-3 rounded-full text-sm ${isActive('/about') ? 'bg-islamic-light text-islamic-green' : 'hover:bg-slate-50'}`}
               onClick={toggleMenu}
             >
-              About
+              {t('nav.about')}
             </Link>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { Heart } from 'lucide-react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { db } from '@/lib/db';
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DuaRequestCardProps {
   id: string;
@@ -27,6 +28,7 @@ const DuaRequestCard = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
   
   const handleMakeDua = useCallback(async () => {
     if (hasMadeDua || isUpdating) return;
@@ -48,21 +50,21 @@ const DuaRequestCard = ({
       localStorage.setItem(`dua-${id}`, 'true');
       
       toast({
-        title: "Jazak'Allah khair",
-        description: "Thank you for making dua. May Allah accept it.",
+        title: t('requests.thankYouTitle'),
+        description: t('requests.thankYouDescription'),
       });
     } catch (error) {
       console.error('Failed to update dua count:', error);
       toast({
-        title: "Error",
-        description: "Failed to update dua count. Please try again.",
+        title: t('requests.errorTitle'),
+        description: t('requests.errorDescription'),
         variant: "destructive"
       });
     } finally {
       setIsUpdating(false);
       setTimeout(() => setIsAnimating(false), 1000);
     }
-  }, [id, count, hasMadeDua, isUpdating, toast]);
+  }, [id, count, hasMadeDua, isUpdating, toast, t]);
   
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -71,11 +73,11 @@ const DuaRequestCard = ({
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays === 0) {
-      return 'Today';
+      return t('requests.today');
     } else if (diffDays === 1) {
-      return 'Yesterday';
+      return t('requests.yesterday');
     } else if (diffDays < 7) {
-      return `${diffDays} days ago`;
+      return t('requests.daysAgo', { count: diffDays });
     } else {
       return date.toLocaleDateString();
     }
@@ -124,7 +126,7 @@ const DuaRequestCard = ({
             } ${isAnimating ? 'scale-150' : 'group-hover:scale-110'}`} 
           />
           <span className="font-medium tracking-wide">
-            {hasMadeDua ? 'Made Dua' : 'I Made Dua'}
+            {hasMadeDua ? t('requests.madeDua') : t('requests.iMadeDua')}
           </span>
           
           {isAnimating && (
@@ -146,7 +148,7 @@ const DuaRequestCard = ({
               size={12} 
               className="fill-islamic-green/20 stroke-islamic-green group-hover/count:fill-islamic-green/40 transition-colors" 
             />
-            <span>{count} {count === 1 ? 'person' : 'people'} made dua</span>
+            <span>{count} {count === 1 ? t('requests.personMadeDua') : t('requests.peopleMadeDua')}</span>
           </span>
         </div>
       </CardFooter>

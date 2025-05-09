@@ -1,70 +1,112 @@
-
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DuaCardProps {
   id: string;
   arabicText: string;
   englishTranslation: string;
+  turkishTranslation: string;
+  germanTranslation: string;
   transliteration?: string;
-  source: string;
-  category: string;
+  source?: string;
+  category?: string;
 }
 
 const DuaCard = ({
   id,
   arabicText,
   englishTranslation,
+  turkishTranslation,
+  germanTranslation,
   transliteration,
   source,
-  category
+  category,
 }: DuaCardProps) => {
   const [showTransliteration, setShowTransliteration] = useState(false);
-  
+  const { language, t } = useLanguage();
+
+  // Get the appropriate translation based on the selected language
+  const getTranslation = () => {
+    switch (language) {
+      case 'tr':
+        return turkishTranslation;
+      case 'de':
+        return germanTranslation;
+      default:
+        return englishTranslation;
+    }
+  };
+
+  // Clean and translate the category
+  const getTranslatedCategory = (category: string | undefined) => {
+    if (!category) return '';
+
+    // Remove any 'category.' prefix (case insensitive) and normalize
+    // This handles both "Category.X" and "category.X" formats
+    const normalizedCategory = category.toLowerCase().replace(/^category\./i, '');
+    
+    // Log for debugging
+    console.log(`Original category: "${category}", Normalized: "${normalizedCategory}"`);
+
+    // Translate using the normalized category key
+    return t(`category.${normalizedCategory}`);
+  };
+
   return (
-    <Card className="border border-slate-100 hover:border-slate-200 bg-white transition-all animate-fade-up" id={`dua-${id}`}>
-      <CardHeader className="pb-0 pt-4">
-        <Badge variant="outline" className="text-islamic-green bg-islamic-light border-islamic-green/10 px-2 py-1 mb-2 w-fit">
-          #{category}
-        </Badge>
-      </CardHeader>
-      
-      <CardContent className="space-y-4 pt-3">
-        <p className="arabic-text text-2xl mb-4">
-          {arabicText}
-        </p>
-        
-        <div className="border-t border-slate-100 pt-4">
-          <p className="text-gray-700">
-            {englishTranslation}
-          </p>
-          
+    <Card className="overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+      <CardContent className="p-6">
+        {category && (
+          <div className="mb-4">
+            <span className="inline-block bg-green-50 text-islamic-green text-xs px-2.5 py-1 rounded-full">
+              {getTranslatedCategory(category)}
+            </span>
+          </div>
+        )}
+
+        <div className="mb-6">
+          <p className="text-right font-arabic text-2xl leading-loose mb-4">{arabicText}</p>
+
           {transliteration && showTransliteration && (
-            <p className="text-gray-600 italic mt-2 text-sm">
-              {transliteration}
-            </p>
+            <p className="text-gray-600 italic mb-4">{transliteration}</p>
+          )}
+
+          <p className="text-gray-700">{getTranslation()}</p>
+        </div>
+
+        <div className="flex justify-between items-center">
+          {transliteration ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs text-gray-500"
+              onClick={() => setShowTransliteration(!showTransliteration)}
+            >
+              {showTransliteration ? (
+                <>
+                  <EyeOff size={14} className="mr-1" />
+                  {t('duas.hideTransliteration')}
+                </>
+              ) : (
+                <>
+                  <Eye size={14} className="mr-1" />
+                  {t('duas.showTransliteration')}
+                </>
+              )}
+            </Button>
+          ) : (
+            <div></div>
+          )}
+
+          {source && (
+            <div className="text-xs text-gray-500">
+              <span className="font-medium">{t('duas.source')}:</span> {source}
+            </div>
           )}
         </div>
       </CardContent>
-      
-      <CardFooter className="flex items-center justify-between pt-0">
-        <span className="text-xs text-gray-500">
-          Source: {source}
-        </span>
-        
-        {transliteration && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowTransliteration(!showTransliteration)}
-            className="text-xs text-islamic-green hover:text-islamic-dark"
-          >
-            {showTransliteration ? 'Hide Transliteration' : 'Show Transliteration'}
-          </Button>
-        )}
-      </CardFooter>
     </Card>
   );
 };

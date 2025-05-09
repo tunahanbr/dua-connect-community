@@ -1,16 +1,20 @@
 import PocketBase from 'pocketbase';
+// Remove this line: import 'dotenv/config';
 
-const pb = new PocketBase('http://127.0.0.1:8090');
+// Get environment variables with fallbacks
+const pocketbaseUrl = import.meta.env.VITE_POCKETBASE_URL || 'http://127.0.0.1:8090';
+const adminEmail = import.meta.env.VITE_POCKETBASE_ADMIN_EMAIL || '';
+const adminPassword = import.meta.env.VITE_POCKETBASE_ADMIN_PASSWORD || '';
 
-// Authenticate as admin
-const adminEmail = 'me@tunahan.at';    // Replace with your admin email
-const adminPassword = 'Tunahan59!';          // Replace with your admin password
+const pb = new PocketBase(pocketbaseUrl);
 
-// Try to authenticate
-try {
-  await pb.admins.authWithPassword(adminEmail, adminPassword);
-} catch (error) {
-  console.error('Failed to authenticate with PocketBase:', error);
+// Authenticate as admin if credentials are provided
+if (adminEmail && adminPassword) {
+  try {
+    await pb.admins.authWithPassword(adminEmail, adminPassword);
+  } catch (error) {
+    console.error('Failed to authenticate with PocketBase:', error);
+  }
 }
 
 export interface Dua {
@@ -37,11 +41,11 @@ export interface Request {
 
 export const db = {
   duas: {
-    getAll: async () => {
+    getAll: async (options: Record<string, any> = {}) => {
       const signal = new AbortController();
       try {
-        const result = await pb.collection('duas').getList(1, 300, {
-          sort: '-created',
+        const result = await pb.collection('duas').getList(1, options.limit || 300, {
+          ...options,
           signal: signal.signal,
         });
         return result.items;
@@ -52,7 +56,7 @@ export const db = {
         }
         throw error;
       } finally {
-        signal.abort(); // Clean up the signal
+        signal.abort();
       }
     },
     getOne: async (id: string) => {
@@ -69,11 +73,11 @@ export const db = {
     }
   },
   requests: {
-    getAll: async () => {
+    getAll: async (options: Record<string, any> = {}) => {
       const signal = new AbortController();
       try {
-        const result = await pb.collection('requests').getList(1, 50, {
-          sort: '-created',
+        const result = await pb.collection('requests').getList(1, options.limit || 50, {
+          ...options,
           signal: signal.signal,
         });
         return result.items;
@@ -84,9 +88,10 @@ export const db = {
         }
         throw error;
       } finally {
-        signal.abort(); // Clean up the signal
+        signal.abort();
       }
-    },
+    }
+    ,
     getOne: async (id: string) => {
       return await pb.collection('requests').getOne(id);
     },

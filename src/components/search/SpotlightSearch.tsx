@@ -34,7 +34,12 @@ interface SpotlightSearchProps {
   items?: DuaItem[];
 }
 
+// Add this import
+import { useLanguage } from "@/contexts/LanguageContext";
+
 const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProps) => {
+  // Add this line to get the language
+  const { language, t } = useLanguage();
   const [searchResults, setSearchResults] = useState<DuaItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
@@ -90,16 +95,25 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
       setSearchResults(categoryItems);
     } else {
       // Otherwise do a regular search across all fields
-      const filtered = items.filter(item => 
-        (item.englishTranslation?.toLowerCase().includes(lowerSearchTerm) || 
-        item.category?.toLowerCase().includes(lowerSearchTerm) ||
-        item.arabicText?.toLowerCase().includes(lowerSearchTerm) ||
-        item.transliteration?.toLowerCase().includes(lowerSearchTerm) ||
-        item.title?.toLowerCase().includes(lowerSearchTerm)) // For backward compatibility
-      );
+      const filtered = items.filter(item => {
+        // Get the appropriate translation based on current language
+        const translationToCheck = language === 'tr' 
+          ? item.turkishTranslation 
+          : language === 'de' 
+            ? item.germanTranslation 
+            : item.englishTranslation;
+            
+        return (
+          translationToCheck?.toLowerCase().includes(lowerSearchTerm) || 
+          item.category?.toLowerCase().includes(lowerSearchTerm) ||
+          item.arabicText?.toLowerCase().includes(lowerSearchTerm) ||
+          item.transliteration?.toLowerCase().includes(lowerSearchTerm) ||
+          item.title?.toLowerCase().includes(lowerSearchTerm)
+        );
+      });
       setSearchResults(filtered);
     }
-  }, [searchTerm, items, categories]);
+  }, [searchTerm, items, categories, language]);
 
   const handleSelect = (item: DuaItem) => {
     // Use a default path if the item doesn't have one
@@ -128,12 +142,12 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange} className="overflow-hidden">
-      <DialogTitle className="sr-only">Search duas</DialogTitle>
+      <DialogTitle className="sr-only">{t('duas.search')}</DialogTitle>
       <Command className="rounded-lg border shadow-md">
         <div className="flex items-center border-b px-3">
           <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
           <CommandInput 
-            placeholder="Search duas or categories..." 
+            placeholder={t('duas.search') + "..."} 
             className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none"
             value={searchTerm}
             onValueChange={setSearchTerm}
@@ -141,11 +155,11 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
           />
         </div>
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>{t('duas.noResults')}</CommandEmpty>
           
           {/* Show category suggestion if there's an exact match */}
           {isExactCategoryMatch && (
-            <CommandGroup heading="Category">
+            <CommandGroup heading={t('category')}>
               <CommandItem 
                 onSelect={() => handleCategorySelect(searchTerm)}
                 className="cursor-pointer bg-muted/50"
@@ -159,7 +173,7 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
           
           {/* Show category suggestions if search term starts with "category:" */}
           {searchTerm.toLowerCase().startsWith("category:") && (
-            <CommandGroup heading="Categories">
+            <CommandGroup heading={t('categories')}>
               {categories
                 .filter(category => 
                   category.toLowerCase().includes(searchTerm.toLowerCase().replace("category:", "").trim())
@@ -183,7 +197,7 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
           
           {/* Show matching categories if search term partially matches categories */}
           {!isExactCategoryMatch && !searchTerm.toLowerCase().startsWith("category:") && searchTerm && (
-            <CommandGroup heading="Matching Categories">
+            <CommandGroup heading={t('matchingCategories')}>
               {categories
                 .filter(category => 
                   category.toLowerCase().includes(searchTerm.toLowerCase().trim())
@@ -204,7 +218,7 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
             </CommandGroup>
           )}
           
-          <CommandGroup heading="Results">
+          <CommandGroup heading={t('results')}>
             {searchResults.map((item, index) => (
               <CommandItem
                 key={item.id || index} // Use index as fallback if id is not available
@@ -213,7 +227,14 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
               >
                 <div className="flex items-center">
                   <span className="mr-2 text-islamic-green">#</span>
-                  <span>{item.englishTranslation || item.title || 'Untitled Dua'}</span>
+                  <span>
+                    {language === 'tr' 
+                      ? (item.turkishTranslation || item.englishTranslation || item.title || 'Untitled Dua')
+                      : language === 'de'
+                        ? (item.germanTranslation || item.englishTranslation || item.title || 'Untitled Dua')
+                        : (item.englishTranslation || item.title || 'Untitled Dua')
+                    }
+                  </span>
                 </div>
                 <span className="ml-auto text-xs text-gray-500">{item.category || 'Uncategorized'}</span>
               </CommandItem>
@@ -225,7 +246,7 @@ const SpotlightSearch = ({ open, onOpenChange, items = [] }: SpotlightSearchProp
               <CommandSeparator />
               <CommandGroup>
                 <CommandItem onSelect={handleViewAll} className="cursor-pointer text-islamic-green">
-                  View all results
+                  {t('viewAllResults')}
                 </CommandItem>
               </CommandGroup>
             </>
