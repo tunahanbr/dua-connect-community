@@ -14,6 +14,7 @@ services:
       - pocketbase
     networks:
       - app-network
+    restart: unless-stopped
 
   pocketbase:
     build:
@@ -23,10 +24,15 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - ./pb/pb_data:/pb/pb_data
+      - pb_data:/pb/pb_data
     networks:
       - app-network
+    restart: unless-stopped
 
 networks:
   app-network:
-    driver: bridge 
+    driver: bridge
+
+volumes:
+  pb_data:
+    driver: local 
