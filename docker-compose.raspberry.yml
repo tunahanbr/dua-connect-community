@@ -35,4 +35,3 @@ networks:
 
 volumes:
   pb_data:
-    driver: local 
