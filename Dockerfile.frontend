@@ -25,8 +25,29 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
+# Create a custom mime.types file
+RUN echo 'types {\n\
+    text/html                             html htm shtml;\n\
+    text/css                              css;\n\
+    application/javascript                js mjs;\n\
+    text/javascript                       js mjs;\n\
+    application/json                      json;\n\
+    image/jpeg                            jpeg jpg;\n\
+    image/png                             png;\n\
+    image/svg+xml                         svg svgz;\n\
+    font/woff                             woff;\n\
+    font/woff2                            woff2;\n\
+    application/vnd.ms-fontobject         eot;\n\
+    font/ttf                              ttf;\n\
+    font/collection                       ttc;\n\
+    font/otf                              otf;\n\
+}' > /etc/nginx/mime.types.custom
+
+# Ensure nginx can read the custom mime types
+RUN echo 'include /etc/nginx/mime.types;\ninclude /etc/nginx/mime.types.custom;\n' >> /etc/nginx/conf.d/mime.conf
+
+# Expose port 8091
 EXPOSE 8091
 
 # Start nginx
-CMD ["nginx", "-g", "daemon off;"] 
+CMD ["nginx", "-g", "daemon off;"]
