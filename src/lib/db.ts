@@ -1,9 +1,9 @@
 import PocketBase from 'pocketbase';
 
 // Get environment variables with fallbacks
-const pocketbaseUrl = import.meta.env.VITE_POCKETBASE_URL || 'http://127.0.0.1:8090';
-const adminEmail = import.meta.env.VITE_POCKETBASE_ADMIN_EMAIL || '';
-const adminPassword = import.meta.env.VITE_POCKETBASE_ADMIN_PASSWORD || '';
+const pocketbaseUrl = import.meta.env.VITE_POCKETBASE_URL;
+const adminEmail = import.meta.env.VITE_POCKETBASE_ADMIN_EMAIL;
+const adminPassword = import.meta.env.VITE_POCKETBASE_ADMIN_PASSWORD;
 
 const pb = new PocketBase(pocketbaseUrl);
 

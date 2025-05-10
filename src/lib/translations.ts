@@ -239,13 +239,6 @@ export const translations = {
           description: 'Düzenli dua ve topluluk desteği ile manevi uygulamanızı derinleştirin'
         }
       },
-      featuredContent: 'Öne Çıkan İçerik',
-      featuredContentDescription: 'En son eklenenleri ve topluluk dualarını keşfedin',
-      featuredDua: 'Öne Çıkan Dua',
-      recentRequest: 'Son Dua İsteği',
-      viewAll: 'Tümünü Gör',
-      noDuasAvailable: 'Şu anda dua bulunmuyor',
-      noRequestsAvailable: 'Şu anda dua isteği bulunmuyor'
     },
     duas: {
       title: 'Dua Kütüphanesi',
@@ -422,13 +415,6 @@ export const translations = {
           description: 'Vertiefen Sie Ihre spirituelle Praxis durch regelmäßiges Dua und Gemeinschaftsunterstützung'
         }
       },
-      featuredContent: 'Ausgewählte Inhalte',
-      featuredContentDescription: 'Entdecken Sie unsere neuesten Ergänzungen und Gemeinschaftsgebete',
-      featuredDua: 'Ausgewähltes Dua',
-      recentRequest: 'Letzte Gebetsanfrage',
-      viewAll: 'Alle Anzeigen',
-      noDuasAvailable: 'Derzeit keine Duas verfügbar',
-      noRequestsAvailable: 'Derzeit keine Gebetsanfragen verfügbar'
     },
     duas: {
       title: 'Bittgebete-Bibliothek',
