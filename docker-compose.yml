@@ -7,14 +7,11 @@ services:
       dockerfile: Dockerfile.frontend
     container_name: dua-connect-frontend
     ports:
-      - "80:80"
+      - "8091:8091"
     env_file:
       - .env
     depends_on:
       - pocketbase
-      - umami
-    networks:
-      - app-network
 
   pocketbase:
     build:
@@ -25,39 +22,3 @@ services:
       - "8090:8090"
     volumes:
       - ./pb/pb_data:/pb/pb_data
-    networks:
-      - app-network
-
-  umami:
-    image: ghcr.io/umami-software/umami:postgresql-latest
-    container_name: dua-connect-umami
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=postgresql://umami:umami@postgres:5432/umami
-      - DATABASE_TYPE=postgresql
-      - HASH_SALT=your-secure-salt
-      - NODE_ENV=production
-    depends_on:
-      - postgres
-    networks:
-      - app-network
-
-  postgres:
-    image: postgres:15-alpine
-    container_name: dua-connect-postgres
-    environment:
-      - POSTGRES_USER=umami
-      - POSTGRES_PASSWORD=umami
-      - POSTGRES_DB=umami
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
-
-volumes:
-  postgres-data: 
