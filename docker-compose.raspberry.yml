@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.raspberry
+    container_name: dua-connect-frontend
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    depends_on:
+      - pocketbase
+    networks:
+      - app-network
+
+  pocketbase:
+    build:
+      context: ./pb
+      dockerfile: Dockerfile.raspberry
+    container_name: dua-connect-pocketbase
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./pb/pb_data:/pb/pb_data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge 
