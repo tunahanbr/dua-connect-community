@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"  # Change 3000 to any host port
+    depends_on:
+      - backend
+    environment:
+      - UMAMI_SCRIPT_URL=http://localhost:3001/umami.js
+    networks:
+      - app-network
+
+  backend:
+    build: ./backend
+    ports:
+      - "8091:8090"
+    volumes:
+      - /pb/pb_data:/app/pb_data
+    networks:
+      - app-network
+
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    ports:
+      - "3001:3000"
+    environment:
+      DATABASE_URL: postgresql://umami:umami@umami-db:5432/umami
+      APP_SECRET: supersecret
+    depends_on:
+      - umami-db
+    networks:
+      - app-network
+
+  umami-db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: umami
+    volumes:
+      - umami_db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  pocketbase_data:
+  umami_db_data:
+
+networks:
+  app-network:
+    driver: bridge
